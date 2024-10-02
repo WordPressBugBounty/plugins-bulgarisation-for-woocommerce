@@ -1,0 +1,1 @@
+# plugins-bulgarisation-for-woocommerce
