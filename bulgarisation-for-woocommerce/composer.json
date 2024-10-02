@@ -1,0 +1,23 @@
+{
+    "type": "project",
+    "require": {
+        "pimple/pimple": "^3.3.1",
+        "ext-mbstring": "*",
+        "ext-soap": "*",
+        "chillerlan/php-qrcode": "^4.3",
+        "ddeboer/vatin": "^2.2",
+        "dompdf/dompdf": "^2.0",
+        "clegginabox/pdf-merger": "dev-master",
+        "htmlburger/carbon-csv": "^1.0"
+    },
+    "extra": {
+        "installer-paths": {
+            "vendor/{$vendor}/{$name}/": ["type:wordpress-plugin"]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Woo_BG\\": "app/"
+        }
+    }
+}
