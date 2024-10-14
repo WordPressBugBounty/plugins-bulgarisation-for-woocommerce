@@ -42,10 +42,6 @@ class ComposerStaticInit9344bd2a3e3112168f18ef0a8cfa8007
             'Dompdf\\' => 7,
             'Ddeboer\\Vatin\\' => 14,
         ),
-        'C' => 
-        array (
-            'Carbon_CSV\\' => 11,
-        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -67,7 +63,7 @@ class ComposerStaticInit9344bd2a3e3112168f18ef0a8cfa8007
         ),
         'Svg\\' => 
         array (
-            0 => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg',
+            0 => __DIR__ . '/..' . '/dompdf/php-svg-lib/src/Svg',
         ),
         'Sabberworm\\CSS\\' => 
         array (
@@ -83,7 +79,7 @@ class ComposerStaticInit9344bd2a3e3112168f18ef0a8cfa8007
         ),
         'FontLib\\' => 
         array (
-            0 => __DIR__ . '/..' . '/phenx/php-font-lib/src/FontLib',
+            0 => __DIR__ . '/..' . '/dompdf/php-font-lib/src/FontLib',
         ),
         'Dompdf\\' => 
         array (
@@ -92,10 +88,6 @@ class ComposerStaticInit9344bd2a3e3112168f18ef0a8cfa8007
         'Ddeboer\\Vatin\\' => 
         array (
             0 => __DIR__ . '/..' . '/ddeboer/vatin/src',
-        ),
-        'Carbon_CSV\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/htmlburger/carbon-csv/src',
         ),
     );
 
