@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '70259575249eeffa19c2f97c7d94fdcbed67cffc',
+        'reference' => '41d598e534671e3cbb074121d96e5919d9a633bf',
         'name' => '__root__',
         'dev' => true,
     ),
@@ -16,7 +16,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '70259575249eeffa19c2f97c7d94fdcbed67cffc',
+            'reference' => '41d598e534671e3cbb074121d96e5919d9a633bf',
             'dev_requirement' => false,
         ),
         'chillerlan/php-qrcode' => array(
@@ -29,12 +29,12 @@
             'dev_requirement' => false,
         ),
         'chillerlan/php-settings-container' => array(
-            'pretty_version' => '3.2.1',
-            'version' => '3.2.1.0',
+            'pretty_version' => '2.1.6',
+            'version' => '2.1.6.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../chillerlan/php-settings-container',
             'aliases' => array(),
-            'reference' => '95ed3e9676a1d47cab2e3174d19b43f5dbf52681',
+            'reference' => '5553558bd381fce5108c6d0343c12e488cfec6bb',
             'dev_requirement' => false,
         ),
         'clegginabox/pdf-merger' => array(
