@@ -4,7 +4,7 @@ namespace Woo_BG;
 defined( 'ABSPATH' ) || exit;
 
 class Plugin {
-	const VERSION = '3.1.2';
+	const VERSION = '3.1.3';
 
 	protected static $_instance;
 
@@ -107,6 +107,7 @@ class Plugin {
 
 		if ( woo_bg_get_option( 'apis', 'enable_nekorekten' ) === 'yes' ) {
 			new Admin\Nekorekten_Com();
+			new Front_End\Checkout\Nekorekten_Com_Checkout();
 		}
 		
 		do_action( 'woo_bg/init-classes' );
