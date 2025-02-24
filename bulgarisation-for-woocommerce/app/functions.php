@@ -208,11 +208,62 @@ function woo_bg_return_bg_states() {
 	);
 }
 
+function woo_bg_return_ro_states() {
+    return array(
+		'' => '',
+        'AB' => 'ALBA',
+        'BC' => 'BACAU',
+        'BT' => 'BOTOSANI',
+        'B'  => 'BUCURESTI',
+        'CS' => 'CARAS-SEVERIN',
+        'CV' => 'COVASNA',
+        'GL' => 'GALATI',
+        'HR' => 'HARGHITA',
+        'IS' => 'IASI',
+        'MH' => 'MEHEDINTI',
+        'OT' => 'OLT',
+        'SM' => 'MARE',
+        'TR' => 'TELEORMAN',
+        'VL' => 'VALCEA',
+        'AR' => 'ARAD',
+        'BH' => 'BIHOR',
+        'BR' => 'BRAILA',
+        'BZ' => 'BUZAU',
+        'CJ' => 'CLUJ',
+        'DB' => 'DAMBOVITA',
+        'GR' => 'GIURGIU',
+        'HD' => 'HUNEDOARA',
+        'IF' => 'ILFOV',
+        'MS' => 'MURES',
+        'PH' => 'PRAHOVA',
+        'SB' => 'SIBIU',
+        'TM' => 'TIMIS',
+        'VS' => 'VASLUI',
+        'AG' => 'ARGES',
+        'BN' => 'BISTRITA-NASAUD',
+        'BV' => 'BRASOV',
+        'CL' => 'CALARASI',
+        'CT' => 'CONSTANTA',
+        'DJ' => 'DOLJ',
+        'GJ' => 'GORJ',
+        'IL' => 'IALOMITA',
+        'MM' => 'MARAMURES',
+        'NT' => 'NEAMT',
+        'SJ' => 'SALAJ',
+        'SV' => 'SUCEAVA',
+        'TL' => 'TULCEA',
+        'VN' => 'VRANCEA',
+    );
+}
+
 function woo_bg_support_text() {
 	?> 
-	<h3><?php esc_html_e( 'Supporting the development', 'woo-bg' ) ?></h3> 
+	<div class="notice notice-info">
+		<h3><?php esc_html_e( 'Supporting the development', 'woo-bg' ) ?></h3> 
+		
+		<?php echo wp_kses_post( wpautop( esc_html__( 'For single donation as development support you can send at ', 'woo-bg' ) . '<a target="_blank" href="https://revolut.me/tihomi9gj5">Revolut</a>' ) ); ?>
+	</div>
 	<?php
-	echo wp_kses_post( wpautop( esc_html__( 'For single donation as development support you can send at ', 'woo-bg' ) . '<a target="_blank" href="https://revolut.me/tihomi9gj5">Revolut</a>' ) );
 }
 
 function woo_bg_get_shipping_tests_options() {
@@ -407,6 +458,7 @@ function woo_bg_is_shipping_enabled() {
 	if ( 
 		woo_bg_get_option( 'apis', 'enable_econt' ) === 'yes' || 
 		woo_bg_get_option( 'apis', 'enable_cvc' ) === 'yes' || 
+		woo_bg_get_option( 'apis', 'enable_boxnow' ) === 'yes' || 
 		woo_bg_get_option( 'apis', 'enable_speedy' ) === 'yes' 
 	) {
 		$enabled = true;
@@ -424,7 +476,6 @@ function woo_bg_get_order_label( $order_id ) {
 	if ( !empty( $order->get_items( 'shipping' ) ) ) {
 		foreach ( $order->get_items( 'shipping' ) as $shipping ) {
 			$method = $shipping['method_id'];
-
 			if ( $shipping['method_id'] === 'woo_bg_speedy' ) {
 				if ( $label = $order->get_meta( 'woo_bg_speedy_label' ) ) {
 					$label_data = $label;
@@ -439,6 +490,12 @@ function woo_bg_get_order_label( $order_id ) {
 				break;
 			} elseif ( $shipping['method_id'] === 'woo_bg_cvc' ) {
 				if ( $label = $order->get_meta( 'woo_bg_cvc_label' ) ) {
+					$label_data = $label;
+				}
+
+				break;
+			} elseif ( $shipping['method_id'] === 'woo_bg_boxnow' ) {
+				if ( $label = $order->get_meta( 'woo_bg_boxnow_shipment_status' ) ) {
 					$label_data = $label;
 				}
 
@@ -480,6 +537,17 @@ function woo_bg_get_order_label( $order_id ) {
 				}
 				
 				break;
+			case 'woo_bg_boxnow':
+				$data = ['items'];
+
+				foreach ( $label_data['parcels'] as $parcel ) {
+					$data['items'][] = [
+						'number' => $parcel['id'],
+						'link' => admin_url( 'admin-ajax.php' ) . '?cache-buster=' . rand() . '&action=woo_bg_boxnow_print_label&parcel=' . $parcel['id'],
+					];
+				}
+				
+				break;
 		}
 	}
 
@@ -487,5 +555,5 @@ function woo_bg_get_order_label( $order_id ) {
 		$data['method'] = $method;
 	}
 
-	return $data;
+	return apply_filters( 'woo_bg/column/order/shipment_status_data', $data, $order );
 }

@@ -4,7 +4,7 @@ namespace Woo_BG;
 defined( 'ABSPATH' ) || exit;
 
 class Plugin {
-	const VERSION = '3.1.3';
+	const VERSION = '3.2.0';
 
 	protected static $_instance;
 
@@ -36,6 +36,8 @@ class Plugin {
 		$this->load_default_options();
 		$this->load_classes();
 		$this->load_service_providers();
+
+		new Cron\Stats();
 
 		if ( class_exists( '\Woo_BG_Pro\Checkout' ) ) {
 			add_action( 'woo_bg/init', array( $this, 'validate_pro' ), PHP_INT_MAX );
@@ -84,7 +86,6 @@ class Plugin {
 
 		new Admin\Admin_Menus();
 		new Admin\Order\Columns();
-		new Cron\Stats();
 
 		if ( woo_bg_get_option( 'apis', 'enable_documents' ) === 'yes' ) {
 			new Admin\Order\Actions();

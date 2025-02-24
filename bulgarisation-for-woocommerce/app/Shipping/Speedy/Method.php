@@ -248,15 +248,18 @@ class Method extends \WC_Shipping_Method {
 	}
 
 	private function generate_recipient_data() {
+		$session_customer = WC()->session->get( 'customer' );
+		
 		$recipient = array(
 			'privatePerson' => true,
 			'clientName' => $this->cookie_data[ 'receiver' ],
 			'phone1' => array(
 				'number' => woo_bg_format_phone( $this->cookie_data[ 'phone' ] ),
-			)
+			),
+			'email' => $session_customer[ 'email' ],
 		);
 
-		if ( isset( $this->cookie_data['billing_to_company'] ) ) {
+		if ( isset( $this->cookie_data['billing_to_company'] ) && $this->cookie_data['billing_to_company'] ) {
 			$recipient['privatePerson'] = false;
 			$recipient['contactName'] = $recipient['clientName'];
 			$recipient['clientName'] = $this->cookie_data['billing_company'];
@@ -404,6 +407,10 @@ class Method extends \WC_Shipping_Method {
 				$services['additionalServices']['cod']['fiscalReceiptItems'] = array();
 
 				foreach ( WC()->cart->get_cart() as $cart_item ) {
+					if ( !$cart_item['line_total'] ) {
+						continue;
+					}
+					
 					$rate = round( ( $cart_item['line_tax'] / $cart_item['line_total'] ) * 100 );
 					$services['additionalServices']['cod']['fiscalReceiptItems'][] = [
 						'description' => mb_substr( $cart_item['data']->get_name(), 0, 50 ),
@@ -584,6 +591,7 @@ class Method extends \WC_Shipping_Method {
 
 		if ( woo_bg_get_option( 'speedy', 'label_after_checkout' ) === 'yes' ) {
 			$email_ids_to_send[] = 'customer_processing_order';
+			$email_ids_to_send[] = 'customer_on_hold_order';
 		}
 		
 		$email_ids_to_send = apply_filters( 'woo_bg/speedy/emails_to_send_label_number', $email_ids_to_send );
