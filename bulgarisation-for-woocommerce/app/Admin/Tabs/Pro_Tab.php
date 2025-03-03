@@ -27,12 +27,29 @@ class Pro_Tab extends Base_Tab {
 
 		<div class="woo-bg-text-wrapper">
 			<?php 
-			if ( ! class_exists( '\Woo_BG_Pro\Checkout' ) ) {
+			if ( ! woo_bg_is_pro_activated() ) {
 				echo "<h3>" . esc_html__( 'Pro Addon', 'woo-bg' ) . "</h3>";
 				
-				echo wp_kses_post( wpautop( __( 'There is a Pro version of the plugin as an addon ( additional plugin to the free one ). This version of the plugin has 2 major checkout functionalities.', 'woo-bg' ) ) );
-				echo wp_kses_post( wpautop( __( 'First one hides most of the unwanted fields as Country, City, State, Postcode, Address 1/2 and in their replacement add one field for city that is a dropdown field with all cities from the courier API.', 'woo-bg' ) ) );
-				echo wp_kses_post( wpautop( __( 'Second addtion is changing the default radio buttons for shipping methods with more stylish buttons.', 'woo-bg' ) ) );
+				echo wp_kses_post( 
+					wpautop( 
+						__( 'There is a Pro version of the plugin as an addon ( additional plugin to the free one ).', 'woo-bg' ) . " ".
+						__( 'This version of the plugin adds a couple of checkout functionalities:', 'woo-bg' )
+					) 
+				);
+				?>
+				<ul>
+					<li>
+						<?php echo wp_kses_post( wpautop( " - " . __( 'Hides most of the unwanted fields as Country, City, State, Postcode, Address 1/2 and in their replacement add one field for city that is a dropdown field with all cities from the courier API. The user also have a search for that field.', 'woo-bg' ) ) ); ?>
+						<?php echo wp_kses_post( wpautop( __( 'In addition, you will have separate option to enable Country field if you want to ship to Greece or Romania.', 'woo-bg' ) ) ) ?>
+					</li>
+					<li>
+						<?php echo wp_kses_post(  wpautop( " - " . __( 'Changing the default radio buttons for shipping methods with more stylish buttons.', 'woo-bg' ) ) ); ?>
+					</li>
+					<li>
+						<?php echo wp_kses_post( wpautop( " - " .  __( 'Allow shipping to Greece and Romania for Econt and Speedy.', 'woo-bg' ) ) ); ?>
+					</li>
+				</ul>
+				<?php
 				echo wp_kses_post( wpautop( __( 'Screenshot of the options:', 'woo-bg' ) ) );
 				?>
 
@@ -129,7 +146,7 @@ class Pro_Tab extends Base_Tab {
 	public function auth_test() {
 		\Woo_BG\Cron\Stats::submit_stats();
 
-		if ( class_exists( '\Woo_BG_Pro\Checkout' ) && !\Woo_BG_Pro\License::is_valid() ) {
+		if ( woo_bg_is_pro_activated() && !\Woo_BG_Pro\License::is_valid() ) {
 			return wpautop( __( 'License is invalid!', 'woo-bg' ) );
 		}
 	}

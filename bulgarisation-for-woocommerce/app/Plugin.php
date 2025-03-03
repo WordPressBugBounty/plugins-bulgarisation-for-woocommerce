@@ -4,7 +4,7 @@ namespace Woo_BG;
 defined( 'ABSPATH' ) || exit;
 
 class Plugin {
-	const VERSION = '3.2.0';
+	const VERSION = '3.3.0';
 
 	protected static $_instance;
 
@@ -39,7 +39,7 @@ class Plugin {
 
 		new Cron\Stats();
 
-		if ( class_exists( '\Woo_BG_Pro\Checkout' ) ) {
+		if ( woo_bg_is_pro_activated() ) {
 			add_action( 'woo_bg/init', array( $this, 'validate_pro' ), PHP_INT_MAX );
 		}
 
