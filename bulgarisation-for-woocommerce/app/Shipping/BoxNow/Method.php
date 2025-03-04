@@ -83,6 +83,8 @@ class Method extends \WC_Shipping_Method {
 					$rate['cost'] = woo_bg_tax_based_price( $this->get_price_from_to_combined() );
 					break;
 			}
+
+			$rate['taxes'] = woo_bg_get_shipping_rate_taxes( $rate['cost'] );
 		}
 
 		$rate['meta_data']['cookie_data'] = $this->cookie_data;
