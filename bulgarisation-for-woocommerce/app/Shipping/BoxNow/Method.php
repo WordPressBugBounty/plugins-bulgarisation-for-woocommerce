@@ -60,7 +60,6 @@ class Method extends \WC_Shipping_Method {
 		if ( $weight > 20 || $apm_size['has_oversize_item'] ) {
 			return;
 		}
-
 		do_action( 'woo_bg/boxnow/rate/before_calculate', $this );
 
 		$rate = array(
@@ -292,15 +291,10 @@ class Method extends \WC_Shipping_Method {
 	public static function get_allowed_apm_size() {
 		$max_size = '0';
 		$has_oversize_item = false;
-		$total_volume = 0;
-		$max_volume = 89320;
 
 		foreach ( WC()->cart->get_cart_contents() as $cart_item ) {
-			$item_data = self::determine_item_size( $cart_item['data'] );
-
-			if ( $item_data['volume'] ) {
-				$total_volume += $item_data['volume'];
-			}
+			$_product = $cart_item['data'];
+			$item_data = self::determine_item_size( $_product->get_height(), $_product->get_width(), $_product->get_length() );
 			
 			if ( $item_data['oversize'] ) {
 				$has_oversize_item = true;
@@ -309,17 +303,13 @@ class Method extends \WC_Shipping_Method {
 			$max_size = ( $item_data['size'] > $max_size ) ? $item_data['size'] : $max_size;
 		}
 
-		if ( $total_volume > $max_volume ) {
-			$has_oversize_item = true;
-		}
-
 		return [
 			'max_size' => $max_size,
 			'has_oversize_item' => $has_oversize_item,
 		];
 	}
 
-	public static function determine_item_size( $product ) {
+	public static function determine_item_size( $height, $width, $length ) {
 		$max_diagonal = 80.78;
 		$dimensions = [
 			[
@@ -350,21 +340,22 @@ class Method extends \WC_Shipping_Method {
 
 		foreach ( $dimensions as $size ) {
 			if ( 
-				!is_numeric( $product->get_height() ) || 
-				!is_numeric( $product->get_width() ) || 
-				!is_numeric( $product->get_length() )
+				( !is_numeric( $height ) || $height == 0 ) ||
+				( !is_numeric( $width ) || $width == 0 ) ||
+				( !is_numeric( $length ) || $length == 0 )
 			) {
 				$item['size'] = 2;
+				$item['volume'] = 40832;
 			} else if (
-				$product->get_height() <= $size['height'] &&
-				$product->get_width() <= $size['width'] &&
-				$product->get_length() <= $size['length']
+				$height <= $size['height'] &&
+				$width <= $size['width'] &&
+				$length <= $size['length']
 			) {
 				$item['size'] = $size['box_size'];
-				$item['volume'] = $product->get_length() * $product->get_width() * $product->get_height();
+				$item['volume'] = $length * $width * $height;
 			} else if ( $size['box_size'] === 3 ) {
-				$item['volume'] = $product->get_length() * $product->get_width() * $product->get_height();
-				$item['max_side'] = max( $product->get_length(), $product->get_width(), $product->get_height() );
+				$item['volume'] = $length * $width * $height;
+				$item['max_side'] = max( $length, $width, $height );
 				$item['size'] = 3;
 				
 				if ( $item['max_side'] > $max_diagonal ) {
@@ -374,6 +365,20 @@ class Method extends \WC_Shipping_Method {
 		}
 
 		return $item;
+	}
+
+	public static function determine_item_size_by_volume( $volume ) {
+		$size = 2;
+
+		if ( $volume <= '17864' ) {
+			$size = 1;
+		} else if ( $volume <= 40832 ) {
+			$size = 2;
+		} else if ( $volume <= 89320 ) {
+			$size = 3;
+		}
+
+		return $size;
 	}
 
 	public static function enqueue_scripts() {
