@@ -34,13 +34,32 @@ class BoxNow {
 	}
 
 	public static function add_meta_boxes() {
-		$screen = wc_get_container()->get( CustomOrdersTableController::class )->custom_orders_table_usage_is_enabled()
-		? array( wc_get_page_screen_id( 'shop-order' ), wc_get_page_screen_id( 'shop_subscription' ) )
-		: array( 'shop_order', 'shop_subscription' );
+		global $post, $theorder;
 
-		$screen = array_filter( $screen );
+		self::$container = woo_bg()->container();
 
-		add_meta_box( 'woo_bg_boxnow', __( 'BOX NOW Delivery', 'woo-bg' ), array( __CLASS__, 'meta_box' ), $screen, 'normal', 'default' );
+		if ( ! is_object( $theorder ) ) {
+			$theorder = wc_get_order( $post->ID );
+		}
+
+		if ( empty( $theorder ) ) {
+			return;
+		}
+
+		if ( !empty( $theorder->get_items( 'shipping' ) ) ) {
+			foreach ( $theorder->get_items( 'shipping' ) as $shipping ) {
+				if ( $shipping['method_id'] === 'woo_bg_boxnow' ) {
+					$screen = wc_get_container()->get( CustomOrdersTableController::class )->custom_orders_table_usage_is_enabled()
+					? array( wc_get_page_screen_id( 'shop-order' ), wc_get_page_screen_id( 'shop_subscription' ) )
+					: array( 'shop_order', 'shop_subscription' );
+
+					$screen = array_filter( $screen );
+
+					add_meta_box( 'woo_bg_boxnow', __( 'BOX NOW Delivery', 'woo-bg' ), array( __CLASS__, 'meta_box' ), $screen, 'normal', 'default' );
+					break;
+				}
+			}
+		}
 	}
 
 	public static function meta_box() {
@@ -216,7 +235,7 @@ class BoxNow {
 			$width = ( $_product->get_height() ) ? (float) $_product->get_width() : 44;
 			$length = ( $_product->get_height() ) ? (float) $_product->get_width() : 58;
 
-			$item_sizes = Method::determine_item_size( $current_size['height'], $current_size['width'], $current_size['length'], $count );
+			$item_sizes = Method::determine_item_size( $current_size['height'], $current_size['width'], $current_size['length'] );
 			$current_volume += $item_sizes['volume'];
 
 			if ( $item_sizes['oversize'] || $item_sizes['volume'] > 89320 || $current_volume > 89320 ) {
@@ -239,7 +258,7 @@ class BoxNow {
 
 			$items[ $box_count ][ 'weight' ] += (float) $weight;
 			$items[ $box_count ][ 'name' ] .= $order_item->get_name() . ";";
-			$items[ $box_count ][ 'value' ] = (string) $new_price;
+			$items[ $box_count ][ 'value' ] = (string) number_format( $new_price, 2, '.', '' );
 
 			if ( $item_sizes['size'] ) {
 				$items[ $box_count ][ 'compartmentSize' ] = Method::determine_item_size_by_volume( $current_volume );
