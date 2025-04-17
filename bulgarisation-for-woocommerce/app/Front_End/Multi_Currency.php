@@ -5,7 +5,11 @@ defined( 'ABSPATH' ) || exit;
 class Multi_Currency {
 
 	public function __construct() {
-		add_filter( 'wc_price', array( __CLASS__, 'display_price_in_multiple_currencies' ), 10 );
+		if ( !is_admin() ) {
+			add_filter( 'wc_price', array( __CLASS__, 'display_price_in_multiple_currencies' ), 10 );
+		}
+
+		add_action( 'woo_bg/invoice/pdf/dompdf', array( __CLASS__, 'add_wc_price_filter_to_pdfs' ) );
 
 		if ( woo_bg_get_option( 'multi_currency', 'cart_rate_message' ) === 'yes' ) {
 			add_action( 'woocommerce_proceed_to_checkout' , array( __CLASS__, 'rate_message' ), 1 );
@@ -28,11 +32,11 @@ class Multi_Currency {
 		}
 	}
 
-	public static function display_price_in_multiple_currencies( $price_html ) {
-		if ( is_admin() ) {
-			return $price_html;
-		}
+	public static function add_wc_price_filter_to_pdfs() {
+		add_filter( 'wc_price', array( __CLASS__, 'display_price_in_multiple_currencies' ), 10 );
+	}
 
+	public static function display_price_in_multiple_currencies( $price_html ) {
 		$current_currency = get_woocommerce_currency();
 		preg_match( '/[0-9.,]+/', $price_html, $matches );
 		$price = isset( $matches[0] ) ? floatval( str_replace( ',', '.', $matches[0] ) ) : 0;
@@ -40,12 +44,12 @@ class Multi_Currency {
 		if( $current_currency == 'BGN' ) {
 			$price_eur = self::convert_to_eur($price);
 		
-			$formatted_price_eur = "<span class=\"woocommerce-Price-amount amount amount-eur\"> <small>(€$price_eur)</small> </span>";
+			$formatted_price_eur = "<span class=\"woocommerce-Price-amount amount amount-eur\"> (€$price_eur) </span>";
 
 			return $price_html . $formatted_price_eur;
 		} elseif ($current_currency == 'EUR' ) {
 			$price_bgn = self::convert_to_bgn($price);
-			$formatted_price_eur = "<span class=\"woocommerce-Price-amount amount amount-bgn\"> <small>($price_bgn лв.)</small> </span>";
+			$formatted_price_eur = "<span class=\"woocommerce-Price-amount amount amount-bgn\"> ($price_bgn лв.) </span>";
 
 			return $price_html . $formatted_price_eur;
 		}
@@ -54,7 +58,7 @@ class Multi_Currency {
 	}
 
 	public static function get_eur_rate() { 
-			return 1.95583;
+		return 1.95583;
 	}
 
 	public static function price_to_float( $price ) {
@@ -84,7 +88,7 @@ class Multi_Currency {
 	}
 
 	public static function rate_message() {
-		$html = '<span class="rate_cart_page"><small>' . __( 'Rate: 1 EUR = 1.95583 BGN', 'woo-bg' ) . '</small></span>';
+		$html = '<span class="rate_cart_page">' . __( 'Rate: 1 EUR = 1.95583 BGN', 'woo-bg' ) . '</span>';
 
 		echo apply_filters( 'woo_bg/bgn_eur/rate_message', $html );
 	}
