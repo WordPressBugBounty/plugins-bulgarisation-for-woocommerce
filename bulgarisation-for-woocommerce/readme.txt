@@ -5,7 +5,7 @@ Requires at least: 5.3
 Tested up to: 6.8
 Donate link: https://revolut.me/tihomi9gj5
 Requires PHP: 7.4
-Stable tag: 3.4.6
+Stable tag: 3.4.7
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -68,8 +68,14 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 == Changelog ==
 
+= 3.4.7 = 
+Dual price: Optimizations
+Econt: Fix send from office, optimizations
+NRA Export: Optimization
+Admin:Update tabs to match new WC styles
+
 = 3.4.6 = 
-Dual price: Optimizationos
+Dual price: Optimizations
 
 = 3.4.5 = 
 Dual price optimizations
