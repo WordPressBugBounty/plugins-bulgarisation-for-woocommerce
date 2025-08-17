@@ -104,6 +104,7 @@ class Speedy {
 						'operations' => $operations,
 						'cookie_data' => $cookie_data,
 						'paymentType' => $theorder->get_payment_method(),
+						'sendFrom' => self::get_send_from_data(),
 						'offices' => self::get_offices( $theorder ),
 						'streets' => self::get_streets( $cookie_data, $theorder ),
 						'orderId' => $theorder->get_id(),
@@ -156,7 +157,28 @@ class Speedy {
 			'description' => __( 'Description', 'woo-bg' ),
 			'a4WithCopy' => __( 'A4 with copy on same page', 'woo-bg' ),
 			'a4OnSingle' => __( 'A4 with copy on single page', 'woo-bg' ),
+			'sendFrom' => __('Send From', 'woo-bg'),
 		);
+	}
+
+	protected static function get_send_from_data() {
+		$container = woo_bg()->container();
+		$type = woo_bg_get_option( 'speedy', 'send_from' );
+		$data = [
+			'type' => $type,
+		];
+
+		$data['currentOffice'] = woo_bg_get_option( 'speedy_send_from', 'office' );
+		$data['offices'] = ( woo_bg_get_option( 'speedy_send_from', 'city' ) ) ? $container[ Client::SPEEDY_OFFICES ]->get_formatted_offices( woo_bg_get_option( 'speedy_send_from', 'city' ) ) : [];
+
+		if ( !empty( $data['offices'] ) ) {
+			$data['offices'] = $data['offices']['shops'];
+		}
+		
+		$data['currentAddress'] = woo_bg_get_option( 'speedy', 'profile_key' );
+		$data['addresses'] = $container[ Client::SPEEDY_PROFILE ]->get_profiles_for_settings();;
+
+		return $data;
 	}
 
 	protected static function get_offices( $order ) {
@@ -329,15 +351,28 @@ class Speedy {
 			$sender['dropoffOfficeId'] = str_replace( 'officeID-', '', woo_bg_get_option( 'speedy_send_from', 'office' ) );
 		}
 
+		if ( isset( $_REQUEST['send_from'] ) && isset( $_REQUEST['send_from_type'] ) ) {
+			switch ( $_REQUEST['send_from_type'] ) {
+				case 'address':
+					$profiles = woo_bg_get_option( 'speedy', 'profile_data' );
+					$sender['clientId'] = $profiles['clients'][ $_REQUEST['send_from'] ]['clientId'];
+
+					unset( $sender['dropoffOfficeId'] );
+					break;
+				case 'office':
+					$sender['dropoffOfficeId'] = str_replace( 'officeID-', '', $_REQUEST['send_from'] );
+					break;
+			}
+		}
+
 		$label['sender'] = $sender;
 
 		return $label;
 	}
 
 	public static function update_fiscal_items( $label, $order ) {
-		$cookie_data = $order->get_meta( 'woo_bg_speedy_cookie_data' );
-
-		if ( isset( $label['service']['additionalServices']['cod']['fiscalReceiptItems'] ) && wc_string_to_bool( woo_bg_get_option( 'speedy', 'kb' ) ) && wc_tax_enabled() ) {
+		if ( wc_string_to_bool( woo_bg_get_option( 'speedy', 'kb' ) ) ) {
+			$cookie_data = $order->get_meta( 'woo_bg_speedy_cookie_data' );
 			$label['service']['additionalServices']['cod']['fiscalReceiptItems'] = array();
 
 			foreach ( $order->get_items() as $item ) {
@@ -359,6 +394,8 @@ class Speedy {
 					'amountWithVat' => number_format( $cookie_data['fixed_price'], 2, '.', '' ),
 				];
 			}
+		} elseif ( isset( $label['service']['additionalServices']['cod']['fiscalReceiptItems'] ) ) {
+			unset( $label['service']['additionalServices']['cod']['fiscalReceiptItems'] );
 		}
 
 		return $label;
