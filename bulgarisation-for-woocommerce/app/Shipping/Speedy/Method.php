@@ -406,14 +406,10 @@ class Method extends \WC_Shipping_Method {
 		);
 
 		$os_value = 0;
-		$is_fragile = false;
+		$is_fragile = wc_string_to_bool( woo_bg_get_option( 'speedy', 'declared_value' ) );
 
 		foreach ( $this->package[ 'contents' ] as $key => $item ) {
 			$_product = wc_get_product( $item[ 'product_id' ] );
-			
-			if ( $_product->get_meta( '_woo_bg_fragile' ) === 'on' ) {
-				$is_fragile = true;
-			}
 		}
 
 		if ( $is_fragile ) {
@@ -578,7 +574,7 @@ class Method extends \WC_Shipping_Method {
 					$cookie_data = '';
 
 					if ( WC()->session->get( 'woo-bg-speedy-label' ) ) {
-						$order->update_meta_data( 'woo_bg_speedy_label', WC()->session->get( 'woo-bg-speedy-label' ) );
+						$order->update_meta_data( 'woo_bg_speedy_label', apply_filters( 'woo_bg/speedy/label_before_save', WC()->session->get( 'woo-bg-speedy-label' ), $order ) );
 						WC()->session->__unset( 'woo-bg-speedy-label' );
 					}
 
