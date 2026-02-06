@@ -13,7 +13,7 @@ class BoxNow {
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_meta_boxes' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_enqueue_scripts' ) );
 
-		add_action( 'wp_ajax_woo_bg_boxnow_generate_label', array( __CLASS__, 'generate_label' ) );
+		add_action( 'wp_ajax_woo_bg_boxnow_generate_label', array( __CLASS__, 'generate_label_ajax' ) );
 		add_action( 'wp_ajax_woo_bg_boxnow_print_label', array( __CLASS__, 'print_label_endpoint' ) );
 		add_action( 'wp_ajax_woo_bg_boxnow_delete_label', array( __CLASS__, 'delete_label' ) );
 	}
@@ -55,7 +55,7 @@ class BoxNow {
 
 					$screen = array_filter( $screen );
 
-					add_meta_box( 'woo_bg_boxnow', __( 'BOX NOW Delivery', 'woo-bg' ), array( __CLASS__, 'meta_box' ), $screen, 'normal', 'default' );
+					add_meta_box( 'woo_bg_boxnow', __( 'BOX NOW Delivery', 'bulgarisation-for-woocommerce' ), array( __CLASS__, 'meta_box' ), $screen, 'normal', 'default' );
 					break;
 				}
 			}
@@ -115,25 +115,25 @@ class BoxNow {
 
 	protected static function get_i18n() {
 		return array(
-			'sendTo' => __('Send to', 'woo-bg'),
-			'sendFrom' => __('Send From', 'woo-bg'),
-			'warehouseApm' => __('Warehouse/Automat', 'woo-bg'),
-			'apm' => __('Automat', 'woo-bg'),
-			'total' => __('Total price', 'woo-bg'),
-			'allowReturn' => __('Allow returns', 'woo-bg'),
-			'updateShipmentStatus' => __( 'Update shipment status', 'woo-bg' ),
-			'generateLabel' => __( 'Generate label', 'woo-bg' ),
-			'deleteLabel' => __( 'Delete label', 'woo-bg' ),
-			'label' => __( 'Label', 'woo-bg' ), 
-			'selected' => __( 'Selected', 'woo-bg' ),
-			'choose' => __( 'Choose', 'woo-bg' ),
-			'labelData' => __( 'Label data', 'woo-bg' ),
-			'shipmentStatus' => __( 'Shipment status', 'woo-bg' ),
-			'boxSize' => __( 'Box size', 'woo-bg' ),
-			'auto' => __( 'Automatically pack products to boxes', 'woo-bg' ),
-			'smallBox' => __( 'Small Box', 'woo-bg' ),
-			'mediumBox' => __( 'Medium Box', 'woo-bg' ),
-			'largeBox' => __( 'Large Box', 'woo-bg' ),
+			'sendTo' => __('Send to', 'bulgarisation-for-woocommerce'),
+			'sendFrom' => __('Send From', 'bulgarisation-for-woocommerce'),
+			'warehouseApm' => __('Warehouse/Automat', 'bulgarisation-for-woocommerce'),
+			'apm' => __('Automat', 'bulgarisation-for-woocommerce'),
+			'total' => __('Total price', 'bulgarisation-for-woocommerce'),
+			'allowReturn' => __('Allow returns', 'bulgarisation-for-woocommerce'),
+			'updateShipmentStatus' => __( 'Update shipment status', 'bulgarisation-for-woocommerce' ),
+			'generateLabel' => __( 'Generate label', 'bulgarisation-for-woocommerce' ),
+			'deleteLabel' => __( 'Delete label', 'bulgarisation-for-woocommerce' ),
+			'label' => __( 'Label', 'bulgarisation-for-woocommerce' ), 
+			'selected' => __( 'Selected', 'bulgarisation-for-woocommerce' ),
+			'choose' => __( 'Choose', 'bulgarisation-for-woocommerce' ),
+			'labelData' => __( 'Label data', 'bulgarisation-for-woocommerce' ),
+			'shipmentStatus' => __( 'Shipment status', 'bulgarisation-for-woocommerce' ),
+			'boxSize' => __( 'Box size', 'bulgarisation-for-woocommerce' ),
+			'auto' => __( 'Automatically pack products to boxes', 'bulgarisation-for-woocommerce' ),
+			'smallBox' => __( 'Small Box', 'bulgarisation-for-woocommerce' ),
+			'mediumBox' => __( 'Medium Box', 'bulgarisation-for-woocommerce' ),
+			'largeBox' => __( 'Large Box', 'bulgarisation-for-woocommerce' ),
 		);
 	}
 
@@ -216,7 +216,7 @@ class BoxNow {
 		$box_size = ( woo_bg_get_option( 'boxnow_price', 'box_size' ) ) ? woo_bg_get_option( 'boxnow_price', 'box_size' ) : 'auto';
 
 		if ( !empty( $_REQUEST['boxSize'] ) ) {
-			$box_size = $_REQUEST['boxSize']['id'];
+			$box_size = sanitize_text_field( $_REQUEST['boxSize']['id'] );
 		}
 
 		return $box_size;
@@ -337,11 +337,7 @@ class BoxNow {
 	}
 
 	public static function generate_label( $order_id = '' ) {
-		if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] === 'woo_bg_boxnow_generate_label' ) {
-			woo_bg_check_admin_label_actions();
-		}
-
-		$order_id = ( isset( $_REQUEST['orderId'] ) ) ? $_REQUEST['orderId'] : $order_id;
+		$order_id = ( isset( $_REQUEST['orderId'] ) ) ? sanitize_text_field( $_REQUEST['orderId'] ) : $order_id;
 
 		if ( !$order_id ) {
 			return;
@@ -351,16 +347,16 @@ class BoxNow {
 		$label_data = self::generate_label_data( $order->get_id() );
 
 		if ( isset( $_REQUEST['origin'] ) ) {
-			$label_data['origin']['locationId'] = $_REQUEST['origin']['id'];
+			$label_data['origin']['locationId'] = sanitize_text_field( $_REQUEST['origin']['id'] );
 		}
 
 		if ( isset( $_REQUEST['destination'] ) ) {
-			$label_data['destination']['locationId'] = $_REQUEST['destination']['id'];
+			$label_data['destination']['locationId'] = sanitize_text_field( $_REQUEST['destination']['id'] );
 		}
 
 		if ( isset( $_REQUEST['declaredValue'] ) ) {
 			if ( $_REQUEST['declaredValue'] > 0  ) {
-				$total = number_format( $_REQUEST['declaredValue'], 2, '.', '' );
+				$total = number_format( sanitize_text_field( $_REQUEST['declaredValue'] ), 2, '.', '' );
 
 				$label_data[ 'paymentMode' ] = 'cod';
 				$label_data[ 'invoiceValue' ] = $total;
@@ -373,7 +369,7 @@ class BoxNow {
 		}
 
 		if ( isset( $_REQUEST[ 'allowReturn' ] ) ) {
-			$label_data['allowReturn'] = wc_string_to_bool( $_REQUEST[ 'allowReturn' ] );
+			$label_data['allowReturn'] = wc_string_to_bool( sanitize_text_field( $_REQUEST[ 'allowReturn' ] ) );
 		}
 
 		$data = self::send_label_to_boxnow( $label_data, $order );
@@ -382,16 +378,39 @@ class BoxNow {
 			wp_send_json_success( $data );
 			wp_die();
 		} else {
-			return $data;
+			
 		}
+
+		return $data;
+	}
+
+	public static function generate_label_ajax( $order_id = '' ) {
+		woo_bg_check_admin_label_actions();
+
+		$order_id = ( isset( $_REQUEST['orderId'] ) ) ? sanitize_text_field( $_REQUEST['orderId'] ) : $order_id;
+
+		if ( !$order_id ) {
+			return;
+		}
+
+		wp_send_json_success( self::generate_label( $order_id ) );
+		wp_die();
 	}
 
 	public static function send_label_to_boxnow( $label, $order ) {
 		$data = [];
 		$container = woo_bg()->container();
 		$request_body = apply_filters( 'woo_bg/boxnow/create_label', $label, $order );
+		$request = wp_remote_post( 'https://api.bulgarisation.bg/wp-json/woo-bg/v1/boxnow/create_label/', [
+			'body' => [
+				'client' => esc_url( home_url( '/' ) ),
+				'env' => $container[ Client::BOXNOW ]->get_env(),
+				'access_token' => $container[ Client::BOXNOW ]->get_access_token(),
+				'request_body' => $request_body,
+			]
+		] );
 
-		$response = $container[ Client::BOXNOW ]->api_call( $container[ Client::BOXNOW ]::CREATE_LABELS_ENDPOINT, $request_body );
+		$response = json_decode( wp_remote_retrieve_body( $request ), 1 );
 
 		if ( isset( $response['message'] ) ) {
 			$data['message'] = $response['message'];
@@ -413,8 +432,8 @@ class BoxNow {
 		woo_bg_check_admin_label_actions();
 
 		$container = woo_bg()->container();
-		$order_id = $_REQUEST['orderId'];
-		$shipment_status = $_REQUEST['shipmentStatus'];
+		$order_id = sanitize_text_field( $_REQUEST['orderId'] );
+		$shipment_status = map_deep( $_REQUEST['shipmentStatus'], 'sanitize_text_field' );
 		$order = wc_get_order( $order_id );
 		
 		foreach ( $shipment_status['parcels'] as $parcel ) {

@@ -1,4 +1,7 @@
-<?php $bgn_eur = ( woo_bg_get_option( 'apis', 'enable_multi_currency' ) === 'yes' ); ?>
+<?php 
+defined( 'ABSPATH' ) || exit;
+$bgn_eur = ( woo_bg_get_option( 'apis', 'enable_multi_currency' ) === 'yes' ); 
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -37,6 +40,7 @@
 	.gray-color { color:#5D5D5D; }
 	.text-bold { font-weight: bold; }
 	.border { border:1px solid black; }
+	.includes_tax { display: none!important; }
 	table tr,th,td { border: 1px solid #d2d2d2; border-collapse:collapse; padding:7px 8px; }
 	table tr th { background: #F4F4F4; font-size:13px; }
 	table tr td { font-size:10px; }
@@ -74,8 +78,8 @@
 	<div class="w-100 mt-10">
 		<table class="w-100 mt-10">
 			<tr>
-				<th class="w-50"><?php esc_html_e( 'Billing from', 'woo-bg' ) ?></th>
-				<th class="w-50"><?php esc_html_e( 'Billing to', 'woo-bg' ) ?></th>
+				<th class="w-50"><?php esc_html_e( 'Billing from', 'bulgarisation-for-woocommerce' ) ?></th>
+				<th class="w-50"><?php esc_html_e( 'Billing to', 'bulgarisation-for-woocommerce' ) ?></th>
 			</tr>
 
 			<tr class="va-top">
@@ -114,7 +118,7 @@
 		<?php foreach ( $this->document->order->get_items() as $item ): ?>
 			<tr>
 				<?php foreach ( $item as $key => $col ): ?>
-					<td <?php echo ( $key !== 'name' ) ? 'align="center"' : '' ?>><?php echo wp_kses_post( $col ) ?></td>
+					<td <?php echo ( $key !== 'name' ) ? 'align="center"' : '' ?>><?php echo wp_kses_post( wordwrap( wp_strip_all_tags( $col ), 80, "<br>" ) ) ?></td>
 				<?php endforeach ?>
 			</tr>
 		<?php endforeach ?>
@@ -125,7 +129,7 @@
 			<div class="<?php echo ( $bgn_eur ) ? 'w-70' : 'w-80' ?>  float-left" align="right">
 				<?php 
 				foreach ( $this->document->order->get_total_items() as $item ) {
-					echo wp_kses_post( wpautop( $item['label'] . ":" ) );
+					echo wp_kses_post( wpautop( $item['label'] ) );
 				}
 				?>
 			</div>
@@ -170,7 +174,7 @@
 		<?php echo esc_html( get_bloginfo( 'name' ) ) ?>
 
 		<span class="page-count text-right">
-			<?php printf( esc_html__('Page %s of %s', 'woo-bg'), '<span class="page-number"></span>', '%PC%' ) ?>
+			<?php printf( esc_html__('Page %s of %s', 'bulgarisation-for-woocommerce'), '<span class="page-number"></span>', '%PC%' ) ?>
 		</span>
 	</footer>
 </html>

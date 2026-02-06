@@ -56,7 +56,7 @@ class Speedy {
 
 					$screen = array_filter( $screen );
 
-					add_meta_box( 'woo_bg_speedy', __( 'Speedy Delivery', 'woo-bg' ), array( __CLASS__, 'meta_box' ), $screen, 'normal', 'default' );
+					add_meta_box( 'woo_bg_speedy', __( 'Speedy Delivery', 'bulgarisation-for-woocommerce' ), array( __CLASS__, 'meta_box' ), $screen, 'normal', 'default' );
 					break;
 				}
 			}
@@ -102,7 +102,6 @@ class Speedy {
 						'label' => $label_data,
 						'shipmentStatus' => $shipment_status,
 						'operations' => $operations,
-						'dimentions' => self::get_dimentions_from_label( $label_data ),
 						'cookie_data' => $cookie_data,
 						'paymentType' => $theorder->get_payment_method(),
 						'sendFrom' => self::get_send_from_data(),
@@ -122,46 +121,49 @@ class Speedy {
 
 	protected static function get_i18n() {
 		return array(
-			'updateShipmentStatus' => __( 'Update shipment status', 'woo-bg' ),
-			'updateLabel' => __( 'Update label', 'woo-bg' ),
-			'generateLabel' => __( 'Generate label', 'woo-bg' ),
-			'deleteLabel' => __( 'Delete label', 'woo-bg' ),
-			'label' => __( 'Label', 'woo-bg' ), 
-			'default' => __( 'Default', 'woo-bg' ),
-			'selected' => __( 'Selected', 'woo-bg' ),
-			'choose' => __( 'Choose', 'woo-bg' ),
-			'deliveryPayedBy' => __( 'Delivery is payed by', 'woo-bg' ),
-			'cd' => __( 'Cash on delivery', 'woo-bg' ), 
-			'packCount' => __( 'Pack count', 'woo-bg' ),
-			'shipmentType' => __( 'Shipment type', 'woo-bg' ),
-			'other' => __( 'Other', 'woo-bg' ),
-			'blVhEt' => __( 'bl. vh. et.', 'woo-bg' ),
-			'streetNumber' => __( 'Street number', 'woo-bg' ),
-			'streetQuarter' => __( 'Street/Quarter', 'woo-bg' ),
-			'office' => __( 'Office', 'woo-bg' ),
-			'address' => __( 'Address', 'woo-bg' ),
-			'deliveryType' => __( 'Delivery type', 'woo-bg' ),
-			'labelData' => __( 'Label data', 'woo-bg' ),
-			'buyer' => __( 'Buyer', 'woo-bg' ),
-			'sender' => __( 'Sender', 'woo-bg' ),
-			'weight' => __( 'Weight', 'woo-bg' ),
-			'fixedPrice' => __( 'Fixed price', 'woo-bg' ),
-			'copyLabelData' => __( 'Copy Label Data', 'woo-bg' ),
-			'copyLabelDataMessage' => __( 'You just copied the label data used for the Speedy API.', 'woo-bg' ),
-			'shipmentStatus' => __( 'Shipment status', 'woo-bg' ),
-			'time' => __( 'Time:', 'woo-bg' ),
-			'event' => __( 'Event:', 'woo-bg' ),
-			'details' => __( 'Details:', 'woo-bg' ),
-			'reviewAndTest' => __( 'Review and test', 'woo-bg' ),
-			'declaredValue' => __( 'Declared value', 'woo-bg' ),
-			'mysticQuarter' => __( 'Street or quarter', 'woo-bg' ),
-			'description' => __( 'Description', 'woo-bg' ),
-			'a4WithCopy' => __( 'A4 with copy on same page', 'woo-bg' ),
-			'a4OnSingle' => __( 'A4 with copy on single page', 'woo-bg' ),
-			'sendFrom' => __('Send From', 'woo-bg'),
-			'length' => __('Length', 'woo-bg'),
-			'width' => __('Width', 'woo-bg'),
-			'height' => __('Height', 'woo-bg'),
+			'updateShipmentStatus' => __( 'Update shipment status', 'bulgarisation-for-woocommerce' ),
+			'updateLabel' => __( 'Update label', 'bulgarisation-for-woocommerce' ),
+			'generateLabel' => __( 'Generate label', 'bulgarisation-for-woocommerce' ),
+			'deleteLabel' => __( 'Delete label', 'bulgarisation-for-woocommerce' ),
+			'label' => __( 'Label', 'bulgarisation-for-woocommerce' ), 
+			'default' => __( 'Default', 'bulgarisation-for-woocommerce' ),
+			'selected' => __( 'Selected', 'bulgarisation-for-woocommerce' ),
+			'choose' => __( 'Choose', 'bulgarisation-for-woocommerce' ),
+			'deliveryPayedBy' => __( 'Delivery is payed by', 'bulgarisation-for-woocommerce' ),
+			'cd' => __( 'Cash on delivery', 'bulgarisation-for-woocommerce' ), 
+			'packCount' => __( 'Pack count', 'bulgarisation-for-woocommerce' ),
+			'shipmentType' => __( 'Shipment type', 'bulgarisation-for-woocommerce' ),
+			'other' => __( 'Other', 'bulgarisation-for-woocommerce' ),
+			'blVhEt' => __( 'bl. vh. et.', 'bulgarisation-for-woocommerce' ),
+			'streetNumber' => __( 'Street number', 'bulgarisation-for-woocommerce' ),
+			'streetQuarter' => __( 'Street/Quarter', 'bulgarisation-for-woocommerce' ),
+			'office' => __( 'Office', 'bulgarisation-for-woocommerce' ),
+			'address' => __( 'Address', 'bulgarisation-for-woocommerce' ),
+			'deliveryType' => __( 'Delivery type', 'bulgarisation-for-woocommerce' ),
+			'labelData' => __( 'Label data', 'bulgarisation-for-woocommerce' ),
+			'buyer' => __( 'Buyer', 'bulgarisation-for-woocommerce' ),
+			'sender' => __( 'Sender', 'bulgarisation-for-woocommerce' ),
+			'weight' => __( 'Weight', 'bulgarisation-for-woocommerce' ),
+			'fixedPrice' => __( 'Fixed price', 'bulgarisation-for-woocommerce' ),
+			'copyLabelData' => __( 'Copy Label Data', 'bulgarisation-for-woocommerce' ),
+			'copyLabelDataMessage' => __( 'You just copied the label data used for the Speedy API.', 'bulgarisation-for-woocommerce' ),
+			'shipmentStatus' => __( 'Shipment status', 'bulgarisation-for-woocommerce' ),
+			'time' => __( 'Time:', 'bulgarisation-for-woocommerce' ),
+			'event' => __( 'Event:', 'bulgarisation-for-woocommerce' ),
+			'details' => __( 'Details:', 'bulgarisation-for-woocommerce' ),
+			'reviewAndTest' => __( 'Review and test', 'bulgarisation-for-woocommerce' ),
+			'declaredValue' => __( 'Declared value', 'bulgarisation-for-woocommerce' ),
+			'mysticQuarter' => __( 'Street or quarter', 'bulgarisation-for-woocommerce' ),
+			'description' => __( 'Description', 'bulgarisation-for-woocommerce' ),
+			'a4WithCopy' => __( 'A4 with copy on same page', 'bulgarisation-for-woocommerce' ),
+			'a4OnSingle' => __( 'A4 with copy on single page', 'bulgarisation-for-woocommerce' ),
+			'sendFrom' => __('Send From', 'bulgarisation-for-woocommerce'),
+			'length' => __('Length', 'bulgarisation-for-woocommerce'),
+			'width' => __('Width', 'bulgarisation-for-woocommerce'),
+			'height' => __('Height', 'bulgarisation-for-woocommerce'),
+			'pack' => __('Pack', 'bulgarisation-for-woocommerce'),
+			'addPack' => __('Add Pack', 'bulgarisation-for-woocommerce'),
+			'removePack' => __('Remove Pack', 'bulgarisation-for-woocommerce'),
 		);
 	}
 
@@ -176,7 +178,7 @@ class Speedy {
 		$data['offices'] = ( woo_bg_get_option( 'speedy_send_from', 'city' ) ) ? $container[ Client::SPEEDY_OFFICES ]->get_formatted_offices( woo_bg_get_option( 'speedy_send_from', 'city' ) ) : [];
 
 		if ( !empty( $data['offices'] ) ) {
-			$data['offices'] = $data['offices']['shops'];
+			$data['offices'] = array_merge( $data['offices']['shops'], $data['offices']['aps'] );
 		}
 		
 		$data['currentAddress'] = woo_bg_get_option( 'speedy', 'profile_key' );
@@ -266,30 +268,12 @@ class Speedy {
 		return $option;
 	}
 
-	protected static function get_dimentions_from_label( $label ) {
-		$dimentions = [
-			'l' => '',
-			'w' => '',
-			'h' => '',
-		];
-
-		if ( isset( $label['content']['parcels'][0]['sizes'] ) ) {
-			$dimentions = [
-				'l' => $label['content']['parcels'][0]['sizes']['depth'],
-				'w' => $label['content']['parcels'][0]['sizes']['width'],
-				'h' => $label['content']['parcels'][0]['sizes']['height'],
-			];
-		}
-
-		return $dimentions;
-	}
-
 	public static function delete_label() {
 		woo_bg_check_admin_label_actions();
 
 		$container = woo_bg()->container();
-		$order_id = $_REQUEST['orderId'];
-		$shipment_status = $_REQUEST['shipmentStatus'];
+		$order_id = sanitize_text_field( $_REQUEST['orderId'] );
+		$shipment_status = map_deep( $_REQUEST['shipmentStatus'], 'sanitize_text_field' );
 		$order = wc_get_order( $order_id );
 		
 		$response = $container[ Client::SPEEDY ]->api_call( $container[ Client::SPEEDY ]::DELETE_LABELS_ENDPOINT, array(
@@ -309,9 +293,9 @@ class Speedy {
 		woo_bg_check_admin_label_actions();
 
 		$container = woo_bg()->container();
-		$order_id = $_REQUEST['orderId'];
+		$order_id = sanitize_text_field( $_REQUEST['orderId'] );
 		$order = wc_get_order( $order_id );
-		$shipment_status = $_REQUEST['shipmentStatus'];
+		$shipment_status = map_deep( $_REQUEST['shipmentStatus'], 'sanitize_text_field' );
 		$data = array();
 
 		$response = $container[ Client::SPEEDY ]->api_call( $container[ Client::SPEEDY ]::TRACK_ENDPOINT, array(
@@ -330,15 +314,14 @@ class Speedy {
 	public static function generate_label() {
 		woo_bg_check_admin_label_actions();
 
-		$order = wc_get_order( $_REQUEST['orderId'] );
-		$label = $_REQUEST['label_data'];
+		$order = wc_get_order( sanitize_text_field( $_REQUEST['orderId'] ) );
+		$label = map_deep( $_REQUEST['label_data'], 'sanitize_text_field' );
 
 		$label = self::update_sender( $label );
 		$label = self::update_recipient_data( $label );
 		$label = self::update_payment_by( $label, $order );
 		$label = self::update_services( $label, $order );
 		$label = self::update_fiscal_items( $label, $order );
-		$label = self::update_dimentions( $label, $order );
 
 		$data = self::send_label_to_speedy( $label, $order );
 
@@ -355,6 +338,7 @@ class Speedy {
 
 		$label = self::update_sender( $label );
 		$label = self::update_cod( $label, $order );
+		$label = self::update_fiscal_items( $label, $order );
 
 		self::send_label_to_speedy( $label, $order );
 	}
@@ -374,16 +358,19 @@ class Speedy {
 			$sender['dropoffOfficeId'] = str_replace( 'officeID-', '', woo_bg_get_option( 'speedy_send_from', 'office' ) );
 		}
 
-		if ( isset( $_REQUEST['send_from'] ) && isset( $_REQUEST['send_from_type'] ) ) {
-			switch ( $_REQUEST['send_from_type'] ) {
+		$new_send_from = map_deep( $_REQUEST['send_from'], 'sanitize_text_field' );
+		$new_send_from_type = sanitize_text_field( $_REQUEST['send_from_type'] );
+
+		if ( !empty( $new_send_from ) && !empty( $new_send_from_type ) ) {
+			switch ( $new_send_from_type ) {
 				case 'address':
 					$profiles = woo_bg_get_option( 'speedy', 'profile_data' );
-					$sender['clientId'] = $profiles['clients'][ $_REQUEST['send_from'] ]['clientId'];
+					$sender['clientId'] = $profiles['clients'][ $new_send_from ]['clientId'];
 
 					unset( $sender['dropoffOfficeId'] );
 					break;
 				case 'office':
-					$sender['dropoffOfficeId'] = str_replace( 'officeID-', '', $_REQUEST['send_from'] );
+					$sender['dropoffOfficeId'] = str_replace( 'officeID-', '', $new_send_from );
 					break;
 			}
 		}
@@ -394,12 +381,19 @@ class Speedy {
 	}
 
 	public static function update_fiscal_items( $label, $order ) {
-		if ( wc_string_to_bool( woo_bg_get_option( 'speedy', 'kb' ) ) ) {
+		if ( 
+			wc_string_to_bool( woo_bg_get_option( 'speedy', 'kb' ) ) && 
+			$order->get_payment_method() === 'cod'
+		) {
 			$cookie_data = $order->get_meta( 'woo_bg_speedy_cookie_data' );
 			$label['service']['additionalServices']['cod']['fiscalReceiptItems'] = array();
 
 			foreach ( $order->get_items() as $item ) {
-				$rate = woo_bg_get_order_item_vat_rate( $item, $order );
+				if ( $item->get_total() <= 0 ) {
+					continue;
+				}
+				
+				$rate = woo_bg_get_order_item_vat_rate( $item, $order, false, 0 );
 
 				$label['service']['additionalServices']['cod']['fiscalReceiptItems'][] = [
 					'description' => mb_substr( $item->get_name(), 0, 50 ),
@@ -409,10 +403,29 @@ class Speedy {
 				];
 			}
 
+			if ( !empty( $order->get_items( 'fee' ) ) && apply_filters('woo_bg/shipping/package_total_includes_fees', true ) ) {
+				foreach ( $order->get_items( 'fee' ) as $item ) {
+					if ( $item->get_total() <= 0 ) {
+						continue;
+					}
+					
+					$rate = woo_bg_get_order_item_vat_rate( $item, $order, false, 0 );
+
+					$label['service']['additionalServices']['cod']['fiscalReceiptItems'][] = [
+						'description' => mb_substr( $item->get_name(), 0, 50 ),
+						'vatGroup' => woo_bg_get_vat_group_from_rate( $rate ),
+						'amount' => number_format( $item->get_total(), 2, '.', '' ),
+						'amountWithVat' => number_format( $item->get_total() + $item->get_total_tax(), 2, '.', '' ),
+					];
+				}
+			}
+
 			if ( !empty( $cookie_data['fixed_price'] ) ) {
+				$rate = ( wc_tax_enabled() ) ? 20 : 0;
+
 				$label['service']['additionalServices']['cod']['fiscalReceiptItems'][] = [
 					'description' => mb_substr( 'Доставка', 0, 50 ),
-					'vatGroup' => woo_bg_get_vat_group_from_rate( 20 ),
+					'vatGroup' => woo_bg_get_vat_group_from_rate( $rate ),
 					'amount' => woo_bg_tax_based_price( $cookie_data['fixed_price'] ),
 					'amountWithVat' => number_format( $cookie_data['fixed_price'], 2, '.', '' ),
 				];
@@ -468,10 +481,10 @@ class Speedy {
 
 	protected static function update_recipient_data( $label ) {
 		$container = woo_bg()->container();
-		$order_id = $_REQUEST['orderId'];
+		$order_id = sanitize_text_field( $_REQUEST['orderId'] );
 		$order = wc_get_order( $order_id );
-		$type = $_REQUEST['type'];
-		$cookie_data = $_REQUEST['cookie_data'];
+		$type = map_deep( $_REQUEST['type'], 'sanitize_text_field' );
+		$cookie_data = map_deep( $_REQUEST['cookie_data'], 'sanitize_text_field' );
 		$cookie_data['type'] = $type['id'];
 
 		$label = self::update_phone_and_names( $label );
@@ -484,7 +497,8 @@ class Speedy {
 			$label[ 'recipient' ][ 'addressLocation' ] = self::generate_recipient_address( $order );
 			$label[ 'recipient' ][ 'address' ] = self::generate_recipient_address( $order );
 		} else if ( $cookie_data['type'] === 'office' ) {
-			$label[ 'recipient' ][ 'pickupOfficeId' ] = $_REQUEST['office']['id'];
+			$office = map_deep( $_REQUEST['office'], 'sanitize_text_field' );
+			$label[ 'recipient' ][ 'pickupOfficeId' ] = $office['id'];
 		}
 
 		$order->update_meta_data( 'woo_bg_speedy_cookie_data', $cookie_data );
@@ -495,15 +509,17 @@ class Speedy {
 
 	protected static function generate_recipient_address( $order ) {
 		$container = woo_bg()->container();
-		$cookie_data = $cookie_data = $_REQUEST['cookie_data'];
+		$cookie_data = map_deep( $_REQUEST['cookie_data'], 'sanitize_text_field' );
 		$country_id = $container[ Client::SPEEDY_COUNTRIES ]->get_country_id( $order->get_billing_country() );
 		$cities_data = $container[ Client::SPEEDY_CITIES ]->get_filtered_cities( $cookie_data['city'], $cookie_data['state'], $country_id );
 		$address['countryId'] = $country_id;
 		$address['siteId'] = $cities_data['cities'][ $cities_data['city_key'] ][ 'id' ];
+		$street = map_deep( $_REQUEST['street'], 'sanitize_text_field' );
+		$other = sanitize_text_field( $_REQUEST[ 'other' ] );
 
-		if ( !empty( $_REQUEST['street']['type'] ) && $_REQUEST['street']['type'] === 'streets' ) {
-			$address["streetId"] = str_replace('street-', '', $_REQUEST['street']['orig_key'] ); 
-			$parts = explode( ',', $_REQUEST[ 'streetNumber' ] );
+		if ( !empty( $street['type'] ) && $street['type'] === 'streets' ) {
+			$address["streetId"] = str_replace('street-', '', $street['orig_key'] ); 
+			$parts = explode( ',', sanitize_text_field( $_REQUEST[ 'streetNumber' ] ) );
 			$address["streetNo"] = array_shift( $parts );
 
 			if ( !empty( $parts ) ) {
@@ -511,21 +527,21 @@ class Speedy {
 				$address["addressNote"] = implode( ' ', $parts );
 			}
 		} else if ( 
-			!empty( $_REQUEST['street']['type'] ) && $_REQUEST['street']['type'] === 'quarters' || 
-			!empty( $_REQUEST['cookie_data']['mysticQuarter'] )
+			!empty( $street['type'] ) && $street['type'] === 'quarters' || 
+			!empty( $cookie_data['mysticQuarter'] )
 		) {
-			if ( !empty( $_REQUEST['cookie_data']['mysticQuarter'] ) ) {
+			if ( !empty( $cookie_data['mysticQuarter'] ) ) {
 				if ( $country_id == '300' ) {
-					$address["addressLine1"] = $_REQUEST['cookie_data']['mysticQuarter'] . ' ' . $_REQUEST[ 'other' ];
+					$address["addressLine1"] = $cookie_data['mysticQuarter'] . ' ' . $other;
 					$address["postCode"] = $order->get_billing_postcode();
 				}
 				
-				$address["addressNote"] = $_REQUEST['cookie_data']['mysticQuarter'] . ' ' . $_REQUEST[ 'other' ];
+				$address["addressNote"] = $cookie_data['mysticQuarter'] . ' ' . $other;
 			} else {
-				$address["complexId"] = str_replace('qtr-', '', $_REQUEST['street']['orig_key'] );
+				$address["complexId"] = str_replace('qtr-', '', $street['orig_key'] );
 
-				if ( !empty( $_REQUEST[ 'other' ] ) ) {
-					$parts = explode( ' ', $_REQUEST[ 'other' ] );
+				if ( !empty( $other ) ) {
+					$parts = explode( ' ', $other );
 
 					$address["blockNo"] = $parts[0];
 
@@ -554,11 +570,10 @@ class Speedy {
 	}
 
 	protected static function update_payment_by( $label, $order ) {
+		$payment_by = map_deep( $_REQUEST['paymentBy'], 'sanitize_text_field' );
+		$cookie_data = map_deep( $_REQUEST['cookie_data'], 'sanitize_text_field' );
 		unset( $label['payment'] );
 		$order_id = $order->get_id();
-
-		$payment_by = $_REQUEST['paymentBy'];
-		$cookie_data = $_REQUEST['cookie_data'];
 
 		$recipient_country = '';
 		$bulgarian_id = 'BG';
@@ -597,11 +612,13 @@ class Speedy {
 	}
 
 	protected static function update_services( $label, $order ) {
-		$cookie_data = $_REQUEST['cookie_data'];
-		$payment_by = $_REQUEST['paymentBy'];
+		$payment_by = map_deep( $_REQUEST['paymentBy'], 'sanitize_text_field' );
+		$cookie_data = map_deep( $_REQUEST['cookie_data'], 'sanitize_text_field' );
 		$country = ( $order->get_shipping_country() ) ? $order->get_shipping_country() : $order->get_billing_country();
-
+		$declared_value = sanitize_text_field( $_REQUEST['declaredValue'] );
+		$test_option = sanitize_text_field( $_REQUEST['testOption']['id'] );
 		$service_id = '505';
+
 		if ( $country !== 'BG' ) {
 			$service_id = '202';
 		}
@@ -626,15 +643,13 @@ class Speedy {
 			}
 		}
 
-		if ( $_REQUEST['declaredValue'] ) {
+		if ( $declared_value ) {
 			$label['service']['additionalServices']['declaredValue'] = array(
-				'amount' => $_REQUEST['declaredValue'], 
+				'amount' => $declared_value, 
 				'fragile' => true, 
 				"ignoreIfNotApplicable" => true 
 			);
 		}
-
-		$test_option = $_REQUEST['testOption']['id'];
 
 		$test = '';
 
@@ -660,7 +675,7 @@ class Speedy {
 	}
 
 	protected static function update_phone_and_names( $label ) {
-		$order = wc_get_order( $_REQUEST['orderId'] );
+		$order = wc_get_order( sanitize_text_field( $_REQUEST['orderId'] ) );
 		$phone = [];
 		$name = '';
 
@@ -705,8 +720,10 @@ class Speedy {
 			return;
 		}
 
-		if ( $payment_by = $_REQUEST['paymentBy'] ) {
-			$cookie_data = $_REQUEST['cookie_data'];
+		$payment_by = map_deep( $_REQUEST['paymentBy'], 'sanitize_text_field' );
+
+		if ( !empty( $payment_by ) ) {
+			$cookie_data = map_deep( $_REQUEST['cookie_data'], 'sanitize_text_field' );
 
 			if ( $payment_by['id'] == 'RECIPIENT' ) {
 				$price = ( wc_tax_enabled() ) ? $response['price']['amount'] : $response['price']['total'];
@@ -724,41 +741,6 @@ class Speedy {
 		$order->calculate_shipping();
 		$order->calculate_totals();
 		$order->save();
-	}
-
-	protected static function update_dimentions( $label, $order ) {
-		$new_dimentions = wc_clean( $_REQUEST['dimentions'] );
-		$current_dimentions = [];
-
-		foreach ( $new_dimentions as $type => $value ) {
-			if ( !$value ) {
-				if ( isset( $label['content']['parcels'] ) ) {
-					unset( $label['content']['parcels'] );
-				}
-
-				return $label;
-			}
-		}
-
-		if ( isset( $label['content']['parcels'] ) ) {
-			$label['content']['parcels'][0]['sizes'] = [
-				'width' => $new_dimentions['w'],
-				'depth' => $new_dimentions['l'],
-				'height' => $new_dimentions['h'],
-			];
-		} else {
-			$label['content']['parcels'] = [ [
-				'seqNo' => 1,
-				'weight' => $label['content']['totalWeight'],
-				'sizes' => [
-					'width' => $new_dimentions['w'],
-					'depth' => $new_dimentions['l'],
-					'height' => $new_dimentions['h'],
-				],
-			] ];
-		}
-
-		return $label;
 	}
 
 	protected static function generate_response( $label, $order ) {
@@ -789,9 +771,10 @@ class Speedy {
 
 	public static function print_labels_endpoint() {
 		$container = woo_bg()->container();
-		$labels = explode( '|', sanitize_text_field( $_REQUEST['parcels']) );
+		$labels = explode( '|', sanitize_text_field( $_REQUEST['parcels'] ) );
 		$size = sanitize_text_field( $_REQUEST['size'] );
 		$parcels = array();
+		$awbsc = sanitize_text_field( $_REQUEST['awbsc'] );
 
 		foreach ( $labels as $label ) {
 			$parcels[] = array(
@@ -806,8 +789,8 @@ class Speedy {
 			'parcels' => $parcels,
 		);
 
-		if ( !empty( $_REQUEST['awbsc'] ) ) {
-			$request_body['additionalWaybillSenderCopy'] = sanitize_text_field( $_REQUEST['awbsc'] );
+		if ( !empty( $awbsc ) ) {
+			$request_body['additionalWaybillSenderCopy'] = $awbsc;
 		}
 
 		$pdf_escaped = $container[ Client::SPEEDY ]->api_call( $container[ Client::SPEEDY ]::PRINT_LABELS_ENDPOINT, $request_body, 1 );

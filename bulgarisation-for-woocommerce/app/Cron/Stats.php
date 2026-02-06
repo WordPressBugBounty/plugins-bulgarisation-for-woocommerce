@@ -11,13 +11,6 @@ class Stats {
 	function __construct() {
 		add_action( 'wp', array( __CLASS__, 'cron_schedule' )  );
 		add_action( 'woo_bg/submit_stats', array( __CLASS__, 'submit_stats' ) );
-
-		if ( 
-			class_exists( 'Woo_BG_Pro\License' ) &&
-			get_transient( \Woo_BG_Pro\License::$transient ) === false
-		) {
-			self::submit_stats();
-		}
 	}
 
 	public static function cron_schedule() {
@@ -26,10 +19,10 @@ class Stats {
 		}
 	}
 
-	public static function submit_stats() {
+	public static function get_args() {
 		$container = woo_bg()->container();
 		
-		$args = [
+		$args = apply_filters( 'woo_bg/stats/args', [
 			'site_url' => esc_url( home_url( '/' ) ),
 			'has_pro' => woo_bg_is_pro_activated(),
 			'has_econt' => ( woo_bg_get_option( 'apis', 'enable_econt' ) === 'yes' ),
@@ -39,25 +32,19 @@ class Stats {
 			'has_cvc' => ( woo_bg_get_option( 'apis', 'enable_cvc' ) === 'yes' ),
 			'has_nekorekten' => ( woo_bg_get_option( 'apis', 'enable_nekorekten' ) === 'yes' ),
 			'has_nra' => ( woo_bg_get_option( 'apis', 'enable_documents' ) === 'yes' && woo_bg_get_option( 'invoice', 'nra_n18' ) === 'yes' ),
-		];
-		
-		if ( woo_bg_is_pro_activated() ) {
-			$args['license_key'] = woo_bg_get_option( 'pro', 'license_key' );
+			'version' => Plugin::VERSION,
+		] );
 
-			if ( 
-				isset( woo_bg()->container()[ 'pro_plugin_dir' ] ) && 
-				file_exists( woo_bg()->container()[ 'pro_plugin_dir' ] . "app/License.php" ) 
-			) {
-				$args['valid_pro_license_file_hash'] = hash_file( 'sha256', woo_bg()->container()[ 'pro_plugin_dir' ] . "app/License.php" ) === 'fa76df5bd96476389a93795ccc30a257a4e860a26278dd5faa2a67b4b7f37d37';
-			}
+		return $args;
+	}
+
+	public static function submit_stats() {
+		if ( woo_bg_get_option( 'apis', 'enable_stats' ) !== 'yes' ) {
+			return;
 		}
 
-		$response = json_decode( wp_remote_retrieve_body( wp_remote_post( self::SERVER_URL . 'wp-json/woo-bg/v1/activity/', [
-			'body' => $args,
-		] ) ), 1 );
-
-		if ( isset( $response['is_pro_active'] ) && class_exists( '\Woo_BG_Pro\License' ) ) {
-			set_transient( 'woo-bg-pro-valid-license', $response['is_pro_active'], WEEK_IN_SECONDS * 2 );
-		}
+		wp_remote_post( self::SERVER_URL . 'wp-json/woo-bg/v1/activity/', [
+			'body' => self::get_args(),
+		] );
 	}
 }

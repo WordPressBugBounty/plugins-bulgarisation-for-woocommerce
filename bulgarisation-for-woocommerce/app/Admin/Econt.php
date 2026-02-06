@@ -55,7 +55,7 @@ class Econt {
 
 					$screen = array_filter( $screen );
 
-					add_meta_box( 'woo_bg_econt', __( 'Econt Delivery', 'woo-bg' ), array( __CLASS__, 'meta_box' ), $screen, 'normal', 'default' );
+					add_meta_box( 'woo_bg_econt', __( 'Econt Delivery', 'bulgarisation-for-woocommerce' ), array( __CLASS__, 'meta_box' ), $screen, 'normal', 'default' );
 					break;
 				}
 			}
@@ -119,55 +119,55 @@ class Econt {
 
 	protected static function get_i18n() {
 		return array(
-			'updateShipmentStatus' => __( 'Update shipment status', 'woo-bg' ),
-			'updateLabel' => __( 'Update label', 'woo-bg' ),
-			'generateLabel' => __( 'Generate label', 'woo-bg' ),
-			'deleteLabel' => __( 'Delete label', 'woo-bg' ),
-			'label' => __( 'Label', 'woo-bg' ), 
-			'default' => __( 'Default', 'woo-bg' ),
-			'selected' => __( 'Selected', 'woo-bg' ),
-			'choose' => __( 'Choose', 'woo-bg' ),
-			'deliveryPayedBy' => __( 'Delivery is payed by', 'woo-bg' ),
-			'cd' => __( 'Cash on delivery', 'woo-bg' ), 
-			'packCount' => __( 'Pack count', 'woo-bg' ),
-			'shipmentType' => __( 'Shipment type', 'woo-bg' ),
-			'other' => __( 'Other', 'woo-bg' ),
-			'blVhEt' => __( 'bl. vh. et.', 'woo-bg' ),
-			'streetNumber' => __( 'Street number', 'woo-bg' ),
-			'streetQuarter' => __( 'Street/Quarter', 'woo-bg' ),
-			'office' => __( 'Office', 'woo-bg' ),
-			'address' => __( 'Address', 'woo-bg' ),
-			'deliveryType' => __( 'Delivery type', 'woo-bg' ),
-			'labelData' => __( 'Label data', 'woo-bg' ),
-			'buyer' => __( 'Buyer', 'woo-bg' ),
-			'sender' => __( 'Sender', 'woo-bg' ),
-			'weight' => __( 'Weight', 'woo-bg' ),
-			'fixedPrice' => __( 'Fixed price', 'woo-bg' ),
-			'copyLabelData' => __( 'Copy Label Data', 'woo-bg' ),
-			'copyLabelDataMessage' => __( 'You just copied the label data used for the Econt API.', 'woo-bg' ),
-			'shipmentStatus' => __( 'Shipment status', 'woo-bg' ),
-			'time' => __( 'Time:', 'woo-bg' ),
-			'event' => __( 'Event:', 'woo-bg' ),
-			'details' => __( 'Details:', 'woo-bg' ),
-			'reviewAndTest' => __( 'Review and test', 'woo-bg' ),
-			'declaredValue' => __( 'Declared value', 'woo-bg' ),
-			'description' => __( 'Description', 'woo-bg' ),
-			'invoiceNum' => __( 'Invoice number', 'woo-bg' ),
-			'partialDelivery' => __( 'Partial delivery', 'woo-bg' ),
-			'sendFrom' => __('Send From', 'woo-bg'),
-			'length' => __('Length', 'woo-bg'),
-			'width' => __('Width', 'woo-bg'),
-			'height' => __('Height', 'woo-bg'),
+			'updateShipmentStatus' => __( 'Update shipment status', 'bulgarisation-for-woocommerce' ),
+			'updateLabel' => __( 'Update label', 'bulgarisation-for-woocommerce' ),
+			'generateLabel' => __( 'Generate label', 'bulgarisation-for-woocommerce' ),
+			'deleteLabel' => __( 'Delete label', 'bulgarisation-for-woocommerce' ),
+			'label' => __( 'Label', 'bulgarisation-for-woocommerce' ), 
+			'default' => __( 'Default', 'bulgarisation-for-woocommerce' ),
+			'selected' => __( 'Selected', 'bulgarisation-for-woocommerce' ),
+			'choose' => __( 'Choose', 'bulgarisation-for-woocommerce' ),
+			'deliveryPayedBy' => __( 'Delivery is payed by', 'bulgarisation-for-woocommerce' ),
+			'cd' => __( 'Cash on delivery', 'bulgarisation-for-woocommerce' ), 
+			'packCount' => __( 'Pack count', 'bulgarisation-for-woocommerce' ),
+			'shipmentType' => __( 'Shipment type', 'bulgarisation-for-woocommerce' ),
+			'other' => __( 'Other', 'bulgarisation-for-woocommerce' ),
+			'blVhEt' => __( 'bl. vh. et.', 'bulgarisation-for-woocommerce' ),
+			'streetNumber' => __( 'Street number', 'bulgarisation-for-woocommerce' ),
+			'streetQuarter' => __( 'Street/Quarter', 'bulgarisation-for-woocommerce' ),
+			'office' => __( 'Office', 'bulgarisation-for-woocommerce' ),
+			'address' => __( 'Address', 'bulgarisation-for-woocommerce' ),
+			'deliveryType' => __( 'Delivery type', 'bulgarisation-for-woocommerce' ),
+			'labelData' => __( 'Label data', 'bulgarisation-for-woocommerce' ),
+			'buyer' => __( 'Buyer', 'bulgarisation-for-woocommerce' ),
+			'sender' => __( 'Sender', 'bulgarisation-for-woocommerce' ),
+			'weight' => __( 'Weight', 'bulgarisation-for-woocommerce' ),
+			'fixedPrice' => __( 'Fixed price', 'bulgarisation-for-woocommerce' ),
+			'copyLabelData' => __( 'Copy Label Data', 'bulgarisation-for-woocommerce' ),
+			'copyLabelDataMessage' => __( 'You just copied the label data used for the Econt API.', 'bulgarisation-for-woocommerce' ),
+			'shipmentStatus' => __( 'Shipment status', 'bulgarisation-for-woocommerce' ),
+			'time' => __( 'Time:', 'bulgarisation-for-woocommerce' ),
+			'event' => __( 'Event:', 'bulgarisation-for-woocommerce' ),
+			'details' => __( 'Details:', 'bulgarisation-for-woocommerce' ),
+			'reviewAndTest' => __( 'Review and test', 'bulgarisation-for-woocommerce' ),
+			'declaredValue' => __( 'Declared value', 'bulgarisation-for-woocommerce' ),
+			'description' => __( 'Description', 'bulgarisation-for-woocommerce' ),
+			'invoiceNum' => __( 'Invoice number', 'bulgarisation-for-woocommerce' ),
+			'partialDelivery' => __( 'Partial delivery', 'bulgarisation-for-woocommerce' ),
+			'sendFrom' => __('Send From', 'bulgarisation-for-woocommerce'),
+			'length' => __('Length', 'bulgarisation-for-woocommerce'),
+			'width' => __('Width', 'bulgarisation-for-woocommerce'),
+			'height' => __('Height', 'bulgarisation-for-woocommerce'),
 		);
 	}
 
 	protected static function get_shipment_types() {
 		return woo_bg_return_array_for_select( array(
-			'PACK' => __('Pack', 'woo-bg'),
-			'DOCUMENT' => __('Document', 'woo-bg'),
-			'PALLET' => __('Pallet', 'woo-bg'),
-			'CARGO' => __('Cargo', 'woo-bg'),
-			'DOCUMENTPALLET' => __('Document-Pallet', 'woo-bg'),
+			'PACK' => __('Pack', 'bulgarisation-for-woocommerce'),
+			'DOCUMENT' => __('Document', 'bulgarisation-for-woocommerce'),
+			'PALLET' => __('Pallet', 'bulgarisation-for-woocommerce'),
+			'CARGO' => __('Cargo', 'bulgarisation-for-woocommerce'),
+			'DOCUMENTPALLET' => __('Document-Pallet', 'bulgarisation-for-woocommerce'),
 		) );
 	}
 
@@ -267,8 +267,8 @@ class Econt {
 		woo_bg_check_admin_label_actions();
 
 		$container = woo_bg()->container();
-		$order_id = $_REQUEST['orderId'];
-		$shipment_status = $_REQUEST['shipmentStatus'];
+		$order_id = sanitize_text_field( $_REQUEST['orderId'] );
+		$shipment_status = map_deep( $_REQUEST['shipmentStatus'], 'sanitize_text_field' );
 		$order = wc_get_order( $order_id );
 
 		if ( isset( $shipment_status['label']['shipmentNumber'] ) ) {
@@ -290,9 +290,9 @@ class Econt {
 		woo_bg_check_admin_label_actions();
 		
 		$container = woo_bg()->container();
-		$order_id = $_REQUEST['orderId'];
+		$order_id = sanitize_text_field( $_REQUEST['orderId'] );
 		$order = wc_get_order( $order_id );
-		$shipment_status = $_REQUEST['shipmentStatus'];
+		$shipment_status = map_deep( $_REQUEST['shipmentStatus'], 'sanitize_text_field' );
 		$data = array();
 		$order_shipment_status = $order->get_meta( 'woo_bg_econt_shipment_status' );
 
@@ -315,8 +315,8 @@ class Econt {
 	public static function generate_label() {
 		woo_bg_check_admin_label_actions();
 
-		$order_id = $_REQUEST['orderId'];
-		$label = $_REQUEST['label_data'];
+		$order_id = $order_id = sanitize_text_field( $_REQUEST['orderId'] );
+		$label = map_deep( $_REQUEST['label_data'], 'sanitize_text_field' );
 
 		$label = self::update_sender( $label );
 		$label = self::update_receiver_address( $label );
@@ -397,16 +397,19 @@ class Econt {
 			$label['senderOfficeCode'] = str_replace( 'officeID-', '', $office );
 		}
 
-		if ( isset( $_REQUEST['send_from'] ) && isset( $_REQUEST['send_from_type'] ) ) {
-			switch ( $_REQUEST['send_from_type'] ) {
+		$new_send_from = map_deep( $_REQUEST['send_from'], 'sanitize_text_field' );
+		$new_send_from_type = sanitize_text_field( $_REQUEST['send_from_type'] );
+
+		if ( !empty( $new_send_from ) && !empty( $new_send_from_type ) ) {
+			switch ( $new_send_from_type ) {
 				case 'address':
 					$profile_addresses = $container[ Client::ECONT_PROFILE ]->get_profile_data()['addresses'];
 
-					$label['senderAddress'] = $profile_addresses[ $_REQUEST['send_from'] ];
+					$label['senderAddress'] = $profile_addresses[ $new_send_from ];
 					unset( $label['senderOfficeCode'] );
 					break;
 				case 'office':
-					$label['senderOfficeCode'] = str_replace( 'officeID-', '', $_REQUEST['send_from'] );
+					$label['senderOfficeCode'] = str_replace( 'officeID-', '', $new_send_from );
 					break;
 			}
 		}
@@ -431,10 +434,10 @@ class Econt {
 
 	protected static function update_receiver_address( $label ) {
 		$container = woo_bg()->container();
-		$order_id = $_REQUEST['orderId'];
+		$order_id = sanitize_text_field( $_REQUEST['orderId'] );
 		$order = wc_get_order( $order_id );
-		$type = $_REQUEST['type'];
-		$cookie_data = $_REQUEST['cookie_data'];
+		$type = map_deep( $_REQUEST['type'], 'sanitize_text_field' );
+		$cookie_data = map_deep( $_REQUEST['cookie_data'], 'sanitize_text_field' );
 		$cookie_data['type'] = $type['id'];
 		$country = ( $order->get_shipping_country() ) ? $order->get_shipping_country() : $order->get_billing_country();
 
@@ -443,14 +446,14 @@ class Econt {
 
 		if ( $type['id'] === 'office' ) {
 			$label[ 'receiverDeliveryType' ] = 'office';
-			$office = $_REQUEST['office'];
+			$office = map_deep( $_REQUEST['office'], 'sanitize_text_field' );
 			$label['receiverOfficeCode'] = $office['code'];
 			$cookie_data['selectedOffice'] = $office['code'];
 		} else {
 			$label[ 'receiverDeliveryType' ] = 'door';
-			$cookie_data['selectedAddress'] = $_REQUEST['street'];
-			$cookie_data['streetNumber'] = $_REQUEST['streetNumber'];
-			$cookie_data['other'] = $_REQUEST['other'];
+			$cookie_data['selectedAddress'] = map_deep( $_REQUEST['street'], 'sanitize_text_field' );
+			$cookie_data['streetNumber'] = sanitize_text_field( $_REQUEST['streetNumber'] );
+			$cookie_data['other'] = sanitize_text_field( $_REQUEST['other'] );
 
 			$states = $container[ Client::ECONT_CITIES ]->get_regions( $country );
 			$state = $states[ $cookie_data['state'] ];
@@ -509,6 +512,9 @@ class Econt {
 					$label["packingList"] = [];
 					
 					foreach ( $order->get_items() as $key => $item ) {
+						if ( $item->get_total() <= 0 ) {
+							continue;
+						}
 						/*
 						/ Count is added to the name for a reason.
 						/ When you have discount with more than 1 quantity, the label cannot be generated because of differences in the cents.
@@ -523,6 +529,26 @@ class Econt {
 							'count' => 1,
 							'price' => number_format( $item->get_total() + $item->get_total_tax(), 2, '.', '' ),
 						];
+					}
+
+					if ( !empty( $order->get_items( 'fee' ) ) && apply_filters('woo_bg/shipping/package_total_includes_fees', true ) ) {
+						foreach ( $order->get_items( 'fee' ) as $key => $item ) {
+							if ( $item->get_total() <= 0 ) {
+								continue;
+							}
+
+							$key++;
+							
+							$rate = woo_bg_get_order_item_vat_rate( $item, $order );
+
+							$label["packingList"][] = [
+								'inventoryNum' => $key,
+								'description' => $item->get_name() . " x " . $item->get_quantity(),
+								'weight' => 0.05,
+								'count' => 1,
+								'price' => number_format( $item->get_total() + $item->get_total_tax(), 2, '.', '' ),
+							];
+						}
 					}
 				} else if ( ( empty( $packing_list_or_invoice ) || $packing_list_or_invoice === 'invoice' ) && empty( $label['services']['invoiceNum'] ) ) {
 					$label['services']['invoiceNum'] = self::get_invoice_number( $order_id );
@@ -580,7 +606,7 @@ class Econt {
 	}
 
 	protected static function update_payment_by( $label, $order_id ) {
-		$payment_by = $_REQUEST['paymentBy'];
+		$payment_by = map_deep( $_REQUEST['paymentBy'], 'sanitize_text_field' );
 		$fixed_price = ( isset( $label['paymentReceiverAmount'] ) ) ? $label['paymentReceiverAmount'] : 0;
 		$sender_method = woo_bg()->container()[ Client::ECONT_PROFILE ]->get_sender_payment_method();
 
@@ -606,7 +632,7 @@ class Econt {
 	}
 
 	protected static function update_test_options( $label ) {
-		$payment_by = $_REQUEST['testOption'];
+		$payment_by = map_deep( $_REQUEST['testOption'], 'sanitize_text_field' );
 		$label['payAfterAccept'] = false;
 		$label['payAfterTest'] = false;
 
@@ -620,7 +646,7 @@ class Econt {
 			$label['payAfterAccept'] = true;
 			$label['payAfterTest'] = true;
 
-			if ( wc_string_to_bool( $_REQUEST['partialDelivery'] ) ) {
+			if ( wc_string_to_bool( sanitize_text_field( $_REQUEST['partialDelivery'] ) ) ) {
 				$label['partialDelivery'] = true;
 			}
 
@@ -630,7 +656,7 @@ class Econt {
 	}
 
 	protected static function update_shipment_type( $label ) {
-		$shipment_type = $_REQUEST['shipmentType'];
+		$shipment_type = map_deep( $_REQUEST['shipmentType'], 'sanitize_text_field' );
 		$label['shipmentType'] = strtolower( $shipment_type['id'] );
 		
 		return $label;
@@ -638,7 +664,7 @@ class Econt {
 
 	protected static function update_phone_and_names( $label, $order_id = null ) {
 		if ( !$order_id ) {
-			$order_id = $_REQUEST['orderId'];
+			$order_id = sanitize_text_field( $_REQUEST['orderId'] );
 		}
 
 		if ( !$order_id ) {
@@ -692,8 +718,8 @@ class Econt {
 		}
 
 		if ( $_REQUEST['declaredValue'] ) {
-			$label[ 'services' ]['declaredValueAmount'] = $_REQUEST['declaredValue'];
-			$label[ 'services' ]['declaredValueCurrency'] = 'BGN';
+			$label[ 'services' ]['declaredValueAmount'] = sanitize_text_field( $_REQUEST['declaredValue'] );
+			$label[ 'services' ]['declaredValueCurrency'] = get_woocommerce_currency();
 		}
 
 		return $label;
@@ -712,7 +738,9 @@ class Econt {
 			return;
 		}
 
-		if ( $payment_by = $_REQUEST['paymentBy'] ) {
+		$payment_by = map_deep( $_REQUEST['paymentBy'], 'sanitize_text_field' );
+
+		if ( !empty( $payment_by ) ) {
 			if ( $payment_by['id'] == 'buyer' ) {
 				$price = woo_bg_tax_based_price( $response['label']['receiverDueAmount'] );
 			} else if ( $payment_by['id'] == 'fixed' && !empty( $request_body['paymentReceiverAmount'] ) ) {

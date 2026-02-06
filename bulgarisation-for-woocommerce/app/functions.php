@@ -40,19 +40,19 @@ function woo_bg_get_return_methods() {
 	return array(
 		1 => array(
 			'id' => 1,
-			'label' => __( 'On a payment account', 'woo-bg' ),
+			'label' => __( 'On a payment account', 'bulgarisation-for-woocommerce' ),
 		),
 		2 => array(
 			'id' => 2,
-			'label' => __( 'Card', 'woo-bg' ),
+			'label' => __( 'Card', 'bulgarisation-for-woocommerce' ),
 		),
 		3 => array(
 			'id' => 3,
-			'label' => __( 'Cash', 'woo-bg' ),
+			'label' => __( 'Cash', 'bulgarisation-for-woocommerce' ),
 		),
 		4 => array(
 			'id' => 4,
-			'label' => __( 'Other', 'woo-bg' ),
+			'label' => __( 'Other', 'bulgarisation-for-woocommerce' ),
 		),
 	);
 }
@@ -61,11 +61,11 @@ function woo_bg_get_yes_no_options() {
 	return array(
 		'no' => array(
 			'id' => 'no',
-			'label' => __( 'No', 'woo-bg' ),
+			'label' => __( 'No', 'bulgarisation-for-woocommerce' ),
 		),
 		'yes' => array(
 			'id' => 'yes',
-			'label' => __( 'Yes', 'woo-bg' ),
+			'label' => __( 'Yes', 'bulgarisation-for-woocommerce' ),
 		),
 	);
 }
@@ -74,27 +74,27 @@ function woo_bg_get_payment_types() {
 	return array(
 		1 => array(
 			'id' => 1,
-			'label' => __( 'Released under Art. 3 payment without PPP', 'woo-bg' ),
+			'label' => __( 'Released under Art. 3 payment without PPP', 'bulgarisation-for-woocommerce' ),
 		),
 		2 => array(
 			'id' => 2,
-			'label' => __( 'Virtual POS terminal', 'woo-bg' ),
+			'label' => __( 'Virtual POS terminal', 'bulgarisation-for-woocommerce' ),
 		),
 		3 => array(
 			'id' => 3,
-			'label' => __( 'Cash on delivery with PPP', 'woo-bg' ),
+			'label' => __( 'Cash on delivery with PPP', 'bulgarisation-for-woocommerce' ),
 		),
 		4 => array(
 			'id' => 4,
-			'label' => __( 'Payment service provider', 'woo-bg' ),
+			'label' => __( 'Payment service provider', 'bulgarisation-for-woocommerce' ),
 		),
 		5 => array(
 			'id' => 5,
-			'label' => __( 'Other', 'woo-bg' ),
+			'label' => __( 'Other', 'bulgarisation-for-woocommerce' ),
 		),
 		6 => array(
 			'id' => 6,
-			'label' => __( 'Reflected with receipt', 'woo-bg' ),
+			'label' => __( 'Reflected with receipt', 'bulgarisation-for-woocommerce' ),
 		),
 	);
 }
@@ -116,7 +116,7 @@ function woo_bg_get_tax_classes() {
 	$classes_options = array(
 		'standard' => array(
 			'id' => 'standard',
-			'label' => __( 'Standard', 'woo-bg' ),
+			'label' => __( 'Standard', 'bulgarisation-for-woocommerce' ),
 		),
 	);
 
@@ -211,18 +211,18 @@ function woo_bg_return_bg_states() {
 function woo_bg_support_text() {
 	?> 
 	<div class="notice notice-info">
-		<h3><?php esc_html_e( 'Supporting the development', 'woo-bg' ) ?></h3> 
+		<h3><?php esc_html_e( 'Supporting the development', 'bulgarisation-for-woocommerce' ) ?></h3> 
 		
-		<?php echo wp_kses_post( wpautop( esc_html__( 'For single donation as development support you can send at ', 'woo-bg' ) . '<a target="_blank" href="https://revolut.me/tihomi9gj5">Revolut</a>' ) ); ?>
+		<?php echo wp_kses_post( wpautop( esc_html__( 'For single donation as development support you can send at ', 'bulgarisation-for-woocommerce' ) . '<a target="_blank" href="https://revolut.me/tihomi9gj5">Revolut</a>' ) ); ?>
 	</div>
 	<?php
 }
 
 function woo_bg_get_shipping_tests_options() {
 	return array(
-		'no' => __( 'No', 'woo-bg' ),
-		'review' => __( 'Review only', 'woo-bg' ),
-		'test' => __( 'Review and test', 'woo-bg' ),
+		'no' => __( 'No', 'bulgarisation-for-woocommerce' ),
+		'review' => __( 'Review only', 'bulgarisation-for-woocommerce' ),
+		'test' => __( 'Review and test', 'bulgarisation-for-woocommerce' ),
 	);
 }
 
@@ -245,11 +245,16 @@ function woo_bg_get_order_shipping_vat( $order, $show_group = false ) {
 	return apply_filters( 'woo_bg/order_item/shipping_vat_rate', $shipping_vat, $order );
 }
 
-function woo_bg_get_order_item_vat_rate( $item, $order, $show_group = false ) {
+function woo_bg_get_order_item_vat_rate( $item, $order, $show_group = false, $default_rate = false ) {
 	$tax_data = wc_tax_enabled() ? $item->get_taxes() : false;
-	$vat_group           = woo_bg_get_option( 'shop', 'vat_group' );
-	$vat_percentages     = woo_bg_get_vat_groups();
-	$rate = ( isset( $vat_percentages[ $vat_group ] ) ) ? $vat_percentages[ $vat_group ] : 0;
+
+	if ( $default_rate !== false ) {
+		$rate = $default_rate;
+	} else {
+		$vat_group           = woo_bg_get_option( 'shop', 'vat_group' );
+		$vat_percentages     = woo_bg_get_vat_groups();
+		$rate = ( isset( $vat_percentages[ $vat_group ] ) ) ? $vat_percentages[ $vat_group ] : 0;
+	}
 	
 	if ( $tax_data ) {
 		$founded = false;
@@ -380,12 +385,12 @@ function woo_bg_format_phone( $phone, $country = 'BG' ) {
 function woo_bg_check_admin_label_actions() {
 	$errors = [];
 		
-	if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'woo_bg_admin_label' ) ) {
-		$errors[] = __( 'Nonce was not provided!', 'woo-bg' );
+	if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash ( $_REQUEST['nonce'] ) ), 'woo_bg_admin_label' ) ) {
+		$errors[] = __( 'Nonce was not provided!', 'bulgarisation-for-woocommerce' );
 	}
 
 	if ( ! current_user_can( 'manage_woocommerce' ) ) {
-		$errors[] = __( 'You cannot create labels.', 'woo-bg' );
+		$errors[] = __( 'You cannot create labels.', 'bulgarisation-for-woocommerce' );
 	}
 
 	if ( !empty( $errors ) ) {
@@ -456,7 +461,7 @@ function woo_bg_get_order_label( $order_id ) {
 			case 'woo_bg_econt':
 				$shipment_status = $order->get_meta( 'woo_bg_econt_shipment_status' );
 
-				if ( $shipment_status && !empty( $label_data['label']['shipmentNumber'] ) ) {
+				if ( $shipment_status && !empty( $label_data['label'] ) && !empty( $label_data['label']['shipmentNumber'] ) && !empty( $shipment_status['label']['pdfURL'] ) ) {
 					$data = [
 						'number' => $label_data['label']['shipmentNumber'],
 						'link' => $shipment_status['label']['pdfURL'] . '&label=10x9',
@@ -477,11 +482,13 @@ function woo_bg_get_order_label( $order_id ) {
 			case 'woo_bg_boxnow':
 				$data = ['items'];
 
-				foreach ( $label_data['parcels'] as $parcel ) {
-					$data['items'][] = [
-						'number' => $parcel['id'],
-						'link' => admin_url( 'admin-ajax.php' ) . '?cache-buster=' . rand() . '&action=woo_bg_boxnow_print_label&parcel=' . $parcel['id'],
-					];
+				if ( isset( $label_data['parcels'] ) && is_array( $label_data['parcels'] ) ) {
+					foreach ( $label_data['parcels'] as $parcel ) {
+						$data['items'][] = [
+							'number' => $parcel['id'],
+							'link' => admin_url( 'admin-ajax.php' ) . '?cache-buster=' . rand() . '&action=woo_bg_boxnow_print_label&parcel=' . $parcel['id'],
+						];
+					}
 				}
 				
 				break;

@@ -24,7 +24,7 @@ class Company {
 			$fields['billing']['billing_company']['class'] = array( 'woo-bg-company-info form-row-last' );
 		} else {
 			$fields['billing']['billing_company'] = array(
-				'label' => __( 'Company name', 'woocommerce' ),
+				'label' => __( 'Company name', 'bulgarisation-for-woocommerce' ),
 				'autocomplete' => 'organization',
 				'priority' => 121,
 				'required' => true,
@@ -34,7 +34,7 @@ class Company {
 		
 		$fields['billing']['billing_to_company'] = array(
 			'type'      => 'checkbox',
-			'label'    => __( 'Do you want a company invoice?', 'woo-bg' ),
+			'label'    => __( 'Do you want a company invoice?', 'bulgarisation-for-woocommerce' ),
 			'class'    => array(
 				'form-row-wide',
 			),
@@ -43,7 +43,7 @@ class Company {
 		);
 
 		$fields['billing']['billing_company_mol'] = array(
-			'label'    => __( 'MOL', 'woo-bg' ),
+			'label'    => __( 'MOL', 'bulgarisation-for-woocommerce' ),
 			'required' => true,
 			'class'    => array(
 				'form-row-first',
@@ -54,7 +54,7 @@ class Company {
 		);
 
 		$fields['billing']['billing_company_eik'] = array(
-			'label'    => __( 'EIK', 'woo-bg' ),
+			'label'    => __( 'EIK', 'bulgarisation-for-woocommerce' ),
 			'required' => true,
 			'class'    => array(
 				'form-row-last',
@@ -65,7 +65,7 @@ class Company {
 		);
 
 		$fields['billing']['billing_company_settlement'] = array(
-			'label'    => __( 'Settlement', 'woo-bg' ),
+			'label'    => __( 'Settlement', 'bulgarisation-for-woocommerce' ),
 			'required' => true,
 			'class'    => array(
 				'form-row-first',
@@ -76,7 +76,7 @@ class Company {
 		);
 
 		$fields['billing']['billing_company_address'] = array(
-			'label'    => __( 'Address', 'woo-bg' ),
+			'label'    => __( 'Address', 'bulgarisation-for-woocommerce' ),
 			'required' => true,
 			'class'    => array(
 				'form-row-last',
@@ -94,36 +94,36 @@ class Company {
 		unset( $fields[ 'company' ] );
 
 		$fields['to_company'] = array(
-			'label' => __( 'Do you want a company invoice?', 'woo-bg' ),
+			'label' => __( 'Do you want a company invoice?', 'bulgarisation-for-woocommerce' ),
 			'show'  => false,
 		);
 
 		$fields['company'] = array(
-			'label' => __( 'Company', 'woocommerce' ),
+			'label' => __( 'Company', 'bulgarisation-for-woocommerce' ),
 			'show'  => false,
 			'wrapper_class' => '_billing_address_2_field'
 		);
 
 		$fields['company_mol'] = array(
-			'label' => __( 'MOL', 'woo-bg' ),
+			'label' => __( 'MOL', 'bulgarisation-for-woocommerce' ),
 			'show'  => false,
 			'wrapper_class' => '_billing_address_1_field'
 		);
 
 		$fields['company_eik'] = array(
-			'label' => __( 'EIK', 'woo-bg' ),
+			'label' => __( 'EIK', 'bulgarisation-for-woocommerce' ),
 			'show'  => false,
 			'wrapper_class' => '_billing_address_2_field'
 		);
 
 		$fields['company_settlement'] = array(
-			'label' => __( 'Settlement', 'woo-bg' ),
+			'label' => __( 'Settlement', 'bulgarisation-for-woocommerce' ),
 			'show'  => false,
 			'wrapper_class' => '_billing_address_1_field'
 		);
 
 		$fields['company_address'] = array(
-			'label' => __( 'Company Address', 'woo-bg' ),
+			'label' => __( 'Company Address', 'bulgarisation-for-woocommerce' ),
 			'show'  => false,
 			'wrapper_class' => '_billing_address_2_field'
 		);

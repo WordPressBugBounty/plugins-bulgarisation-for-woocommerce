@@ -55,7 +55,7 @@ class CVC {
 
 					$screen = array_filter( $screen );
 
-					add_meta_box( 'woo_bg_cvc', __( 'CVC Delivery', 'woo-bg' ), array( __CLASS__, 'meta_box' ), $screen, 'normal', 'default' );
+					add_meta_box( 'woo_bg_cvc', __( 'CVC Delivery', 'bulgarisation-for-woocommerce' ), array( __CLASS__, 'meta_box' ), $screen, 'normal', 'default' );
 					break;
 				}
 			}
@@ -119,40 +119,40 @@ class CVC {
 
 	protected static function get_i18n() {
 		return array(
-			'updateShipmentStatus' => __( 'Update shipment status', 'woo-bg' ),
-			'updateLabel' => __( 'Update label', 'woo-bg' ),
-			'generateLabel' => __( 'Generate label', 'woo-bg' ),
-			'deleteLabel' => __( 'Delete label', 'woo-bg' ),
-			'label' => __( 'Label', 'woo-bg' ), 
-			'default' => __( 'Default', 'woo-bg' ),
-			'selected' => __( 'Selected', 'woo-bg' ),
-			'choose' => __( 'Choose', 'woo-bg' ),
-			'deliveryPayedBy' => __( 'Delivery is payed by', 'woo-bg' ),
-			'cd' => __( 'Cash on delivery', 'woo-bg' ), 
-			'packCount' => __( 'Pack count', 'woo-bg' ),
-			'shipmentType' => __( 'Shipment type', 'woo-bg' ),
-			'other' => __( 'Other', 'woo-bg' ),
-			'blVhEt' => __( 'bl. vh. et.', 'woo-bg' ),
-			'streetNumber' => __( 'Street number', 'woo-bg' ),
-			'streetQuarter' => __( 'Street/Quarter', 'woo-bg' ),
-			'office' => __( 'Office', 'woo-bg' ),
-			'address' => __( 'Address', 'woo-bg' ),
-			'deliveryType' => __( 'Delivery type', 'woo-bg' ),
-			'labelData' => __( 'Label data', 'woo-bg' ),
-			'buyer' => __( 'Buyer', 'woo-bg' ),
-			'sender' => __( 'Sender', 'woo-bg' ),
-			'contract' => __( 'Contract', 'woo-bg' ),
-			'weight' => __( 'Weight', 'woo-bg' ),
-			'fixedPrice' => __( 'Fixed price', 'woo-bg' ),
-			'copyLabelData' => __( 'Copy Label Data', 'woo-bg' ),
-			'copyLabelDataMessage' => __( 'You just copied the label data used for the cvc API.', 'woo-bg' ),
-			'shipmentStatus' => __( 'Shipment status', 'woo-bg' ),
-			'time' => __( 'Time:', 'woo-bg' ),
-			'event' => __( 'Event:', 'woo-bg' ),
-			'details' => __( 'Details:', 'woo-bg' ),
-			'reviewAndTest' => __( 'Review and test', 'woo-bg' ),
-			'declaredValue' => __( 'Declared value', 'woo-bg' ),
-			'description' => __( 'Description', 'woo-bg' ),
+			'updateShipmentStatus' => __( 'Update shipment status', 'bulgarisation-for-woocommerce' ),
+			'updateLabel' => __( 'Update label', 'bulgarisation-for-woocommerce' ),
+			'generateLabel' => __( 'Generate label', 'bulgarisation-for-woocommerce' ),
+			'deleteLabel' => __( 'Delete label', 'bulgarisation-for-woocommerce' ),
+			'label' => __( 'Label', 'bulgarisation-for-woocommerce' ), 
+			'default' => __( 'Default', 'bulgarisation-for-woocommerce' ),
+			'selected' => __( 'Selected', 'bulgarisation-for-woocommerce' ),
+			'choose' => __( 'Choose', 'bulgarisation-for-woocommerce' ),
+			'deliveryPayedBy' => __( 'Delivery is payed by', 'bulgarisation-for-woocommerce' ),
+			'cd' => __( 'Cash on delivery', 'bulgarisation-for-woocommerce' ), 
+			'packCount' => __( 'Pack count', 'bulgarisation-for-woocommerce' ),
+			'shipmentType' => __( 'Shipment type', 'bulgarisation-for-woocommerce' ),
+			'other' => __( 'Other', 'bulgarisation-for-woocommerce' ),
+			'blVhEt' => __( 'bl. vh. et.', 'bulgarisation-for-woocommerce' ),
+			'streetNumber' => __( 'Street number', 'bulgarisation-for-woocommerce' ),
+			'streetQuarter' => __( 'Street/Quarter', 'bulgarisation-for-woocommerce' ),
+			'office' => __( 'Office', 'bulgarisation-for-woocommerce' ),
+			'address' => __( 'Address', 'bulgarisation-for-woocommerce' ),
+			'deliveryType' => __( 'Delivery type', 'bulgarisation-for-woocommerce' ),
+			'labelData' => __( 'Label data', 'bulgarisation-for-woocommerce' ),
+			'buyer' => __( 'Buyer', 'bulgarisation-for-woocommerce' ),
+			'sender' => __( 'Sender', 'bulgarisation-for-woocommerce' ),
+			'contract' => __( 'Contract', 'bulgarisation-for-woocommerce' ),
+			'weight' => __( 'Weight', 'bulgarisation-for-woocommerce' ),
+			'fixedPrice' => __( 'Fixed price', 'bulgarisation-for-woocommerce' ),
+			'copyLabelData' => __( 'Copy Label Data', 'bulgarisation-for-woocommerce' ),
+			'copyLabelDataMessage' => __( 'You just copied the label data used for the cvc API.', 'bulgarisation-for-woocommerce' ),
+			'shipmentStatus' => __( 'Shipment status', 'bulgarisation-for-woocommerce' ),
+			'time' => __( 'Time:', 'bulgarisation-for-woocommerce' ),
+			'event' => __( 'Event:', 'bulgarisation-for-woocommerce' ),
+			'details' => __( 'Details:', 'bulgarisation-for-woocommerce' ),
+			'reviewAndTest' => __( 'Review and test', 'bulgarisation-for-woocommerce' ),
+			'declaredValue' => __( 'Declared value', 'bulgarisation-for-woocommerce' ),
+			'description' => __( 'Description', 'bulgarisation-for-woocommerce' ),
 		);
 	}
 
@@ -200,8 +200,8 @@ class CVC {
 		woo_bg_check_admin_label_actions();
 
 		$container = woo_bg()->container();
-		$order_id = $_REQUEST['orderId'];
-		$shipment_status = $_REQUEST['shipmentStatus'];
+		$order_id = sanitize_text_field( $_REQUEST['orderId'] );
+		$shipment_status = map_deep( $_REQUEST['shipmentStatus'], 'sanitize_text_field' );
 		$order = wc_get_order( $order_id );
 		
 		$response = $container[ Client::CVC ]->api_call( $container[ Client::CVC ]::CANCEL_LABELS_ENDPOINT, array(
@@ -220,9 +220,9 @@ class CVC {
 		woo_bg_check_admin_label_actions();
 
 		$container = woo_bg()->container();
-		$order_id = $_REQUEST['orderId'];
+		$order_id = sanitize_text_field( $_REQUEST['orderId'] );
+		$shipment_status = map_deep( $_REQUEST['shipmentStatus'], 'sanitize_text_field' );
 		$order = wc_get_order( $order_id );
-		$shipment_status = $_REQUEST['shipmentStatus'];
 
 		$response = $container[ Client::CVC ]->api_call( $container[ Client::CVC ]::ACTIONS_ENDPOINT, array(
 			'wb' => $shipment_status['wb'],
@@ -240,8 +240,8 @@ class CVC {
 	public static function generate_label() {
 		woo_bg_check_admin_label_actions();
 
-		$order_id = $_REQUEST['orderId'];
-		$label = $_REQUEST['label_data'];
+		$order_id = sanitize_text_field( $_REQUEST['orderId'] );
+		$label = map_deep( $_REQUEST['label_data'], 'sanitize_text_field' );
 
 		$label = self::update_sender( $label );
 		$label = self::update_receiver_address( $label );
@@ -326,25 +326,27 @@ class CVC {
 
 	protected static function update_receiver_address( $label ) {
 		$container = woo_bg()->container();
-		$order_id = $_REQUEST['orderId'];
+		$order_id = sanitize_text_field( $_REQUEST['orderId'] );
 		$order = wc_get_order( $order_id );
-		$type = $_REQUEST['type'];
-		$cookie_data = $_REQUEST['cookie_data'];
+		$type = sanitize_text_field( $_REQUEST['type'] );
+		$cookie_data = map_deep( $_REQUEST['cookie_data'], 'sanitize_text_field' );
 		$cookie_data['type'] = $type['id'];
 
 		$label = self::unset_rec_address_fields( $label );
 
 		if ( $type['id'] === 'address' ) {
-			if ( $_REQUEST['street']['type'] === 'streets' ) {
-				$label['rec']["street_id"] = str_replace('street-', '', $_REQUEST['street']['orig_key'] ); 
-				$label['rec']["num"] = $_REQUEST['streetNumber'];
-			} else if ( $_REQUEST['street']['type'] === 'quarters' ) {
-				$label['rec']["qt_id"] = str_replace('qtr-', '', $_REQUEST['street']['orig_key'] );
+			$street = map_deep( $_REQUEST['street'], 'sanitize_text_field' );
+			if ( $street['type'] === 'streets' ) {
+				$label['rec']["street_id"] = str_replace('street-', '', $street['orig_key'] ); 
+				$label['rec']["num"] = sanitize_text_field( $_REQUEST['streetNumber'] );
+			} else if ( $street['type'] === 'quarters' ) {
+				$label['rec']["qt_id"] = str_replace('qtr-', '', $street['orig_key'] );
 			}
 
 			$label = self::update_rec_other_fields( $label );
 		} else if ( $type['id'] === 'office' ) {
-			$label['rec']["office_id"] = $_REQUEST['office']['id'];
+			$office = map_deep( $_REQUEST['office'], 'sanitize_text_field' );
+			$label['rec']["office_id"] = $office['id'];
 		}
 
 		$order->update_meta_data( 'woo_bg_cvc_cookie_data', $cookie_data );
@@ -399,7 +401,7 @@ class CVC {
 
 	protected static function update_rec_other_fields( $label ) {
 		if ( !empty( $_REQUEST[ 'other' ] ) ) {
-			$parts = explode( ' ', $_REQUEST[ 'other' ] );
+			$other = sanitize_text_field( $_REQUEST[ 'other' ] );
 
 			$label['rec']["block"] = $parts[0];
 
@@ -426,7 +428,7 @@ class CVC {
 	}
 
 	protected static function update_payment_by( $label, $order_id ) {
-		$payment_by = $_REQUEST['paymentBy'];
+		$payment_by = sanitize_text_field( $_REQUEST['paymentBy'] );
 
 		if ( $payment_by['id'] === 'fixed'  ) {
 			$label['payer'] = 'sender';
@@ -444,7 +446,7 @@ class CVC {
 	}
 
 	protected static function update_test_options( $label ) {
-		$test_option = $_REQUEST['testOption']['id'];
+		$test_option = sanitize_text_field( $_REQUEST['testOption']['id'] );
 
 		if ( isset( $label['is_observe'] ) ) {
 			unset( $label['is_observe'] );
@@ -487,7 +489,7 @@ class CVC {
 	}
 
 	protected static function update_phone_and_names( $label ) {
-		$order = wc_get_order( $_REQUEST['orderId'] );
+		$order = wc_get_order( sanitize_text_field( $_REQUEST['orderId'] ) );
 		$phone = [];
 		$name = '';
 
@@ -510,8 +512,8 @@ class CVC {
 	}
 
 	protected static function update_os_value_and_cod( $label ) {
-		$cookie_data = $_REQUEST['cookie_data'];
-		$payment_by = $_REQUEST['paymentBy'];
+		$cookie_data = map_deep( $_REQUEST['cookie_data'], 'sanitize_text_field' );
+		$payment_by = map_deep( $_REQUEST['paymentBy'], 'sanitize_text_field' );
 
 		if ( isset( $label['cod_amount'] ) ) {
 			if ( !$label['cod_amount'] ) {
@@ -531,7 +533,7 @@ class CVC {
 		}
 
 		if ( $_REQUEST['declaredValue'] ) {
-			$label[ 'os_value' ] = $_REQUEST['declaredValue'];
+			$label[ 'os_value' ] = sanitize_text_field( $_REQUEST['declaredValue'] );
 		}
 
 		return $label;
@@ -550,7 +552,7 @@ class CVC {
 		}
 
 		if ( $payment_by = $_REQUEST['paymentBy'] ) {
-			$cookie_data = $_REQUEST['cookie_data'];
+			$cookie_data = map_deep( $_REQUEST['cookie_data'], 'sanitize_text_field' );
 
 			if ( $payment_by['id'] == 'rec' ) {
 				$price = ( wc_tax_enabled() ) ? $response['price'] : $response['price_with_vat'];
