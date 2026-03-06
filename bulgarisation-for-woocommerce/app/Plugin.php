@@ -4,7 +4,7 @@ namespace Woo_BG;
 defined( 'ABSPATH' ) || exit;
 
 class Plugin {
-	const VERSION = '3.5.8';
+	const VERSION = '3.6.0';
 
 	protected static $_instance;
 
@@ -70,6 +70,10 @@ class Plugin {
 			} );
 		}
 
+		if ( woo_bg_get_option( 'reports', 'enable_connectix' ) && !woo_bg_get_option( 'connectix', 'level_of_warning' )  ) {
+			woo_bg_set_option( 'connectix', 'level_of_warning', 'high' );
+		}
+
 		if ( !woo_bg_get_option( 'shippings', 'woo_bg_econt_is_courier' ) ) {
 			woo_bg_set_option( 'shippings', 'woo_bg_econt_is_courier', 'yes' );
 			woo_bg_set_option( 'shippings', 'woo_bg_speedy_is_courier', 'yes' );
@@ -118,10 +122,7 @@ class Plugin {
 		new Shipping\Register( $this->container );
 		new Shipping\CheckoutLayout();
 
-		if ( woo_bg_get_option( 'apis', 'enable_nekorekten' ) === 'yes' ) {
-			new Admin\Nekorekten_Com();
-			new Front_End\Checkout\Nekorekten_Com_Checkout();
-		}
+		new Reports\Reports();
 		
 		do_action( 'woo_bg/init-classes' );
 	}
