@@ -5,7 +5,7 @@ Requires at least: 5.3
 Tested up to: 6.9
 Donate link: https://revolut.me/tihomi9gj5
 Requires PHP: 7.4
-Stable tag: 3.6.0
+Stable tag: 3.6.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -22,7 +22,8 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 *   Генериране на експорт файл с фактури и кредитни известия за Microinvest Delta
 *   Добавя полета за фактуриране към фирма.
 *   Проверка на ДДС номер с европейската система VIES.
-*   Проверка за отзиви от nekorekten.com
+*   Проверка за отзиви от Connectix.bg
+*   Проверка за отзиви от nepostop.bg
 *   Добавена възможност за добавяне на вече създадени поръчки към одиторският файл.
 *   Добавени методи за доставка с [Еконт](https://www.econt.com/).
 *   Добавени методи за доставка със [BOX NOW](https://boxnow.bg/e-shops).
@@ -45,6 +46,14 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 [Facebook група](https://www.facebook.com/groups/bulgarisationforwoocommerce/)
 [GitHub](https://github.com/susameca/bulgarisation-for-woocommerce) хранилището на плъгина където можете да допринесете към развитието на плъгина.
+
+=== PRO version ===
+*   Скрива повечето нежелани полета от чекаута като държава, град, област, пощенски код, адрес 1/2 и като техен заместител добавя ново поле за град с дропаун с градовете от API на спедитора. Потребителя също има поле за търсене. В допълнение ще имате друга настройка, която да включи полето за държава ако искате да продавате в Гърция и Румъния.
+*   Променя дефолтните радио бутони на шипинг методите с по-стилизирани нормални бутони.
+*   Добавяне на доставки до Гърция и Румъния за Еконт и Спиди.
+*   Възможност за добавяне номера на поръчката в описанието на товарителницата.
+*   Добавя възможност за автоматична смяна на статусите на поръчките спрямо статуса на товарителницата.
+*   Добавя nekorekten.com като източник на отзиви за потребителите
 
 == Frequently Asked Questions ==
 
@@ -91,17 +100,24 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
     - https://lox.e-cvc.bg/
 
 - Проверка за некоректни клиенти чрез услугата:
-  - Connectix.bg
+  - connectix.bg
     - https://api-sandbox.connectix.bg/
     - https://api.connectix.bg/trackings
     - https://api.connectix.bg/shopper/check
     - https://api.connectix.bg/integration/register
+  - nepostop.bg
+    - https://nepostop.com/api/v1/phone-check
+    - https://nepostop.com/api/v1/shipments
 
 - При съгласие за подпомагане на разработката за плъгина се събира информация коя основна настройка е включена от плъгина към https://license.bulgarisation.bg/
 
 При работа с тези външни услуги могат да бъдат изпращани данни като: име и адрес на получателя, телефон, имейл, стойност на поръчката, наложен платеж, както и друга информация, необходима за създаване на товарителници и/или проверка на коректността на клиента. Данните се изпращат единствено с цел обработка и доставка на поръчката и проверка за потенциални злоупотреби.
 
 == Changelog ==
+
+= 3.6.1 =
+Econt/Speedy: Fix issue with address fields
+Client Reports: Add nepostop.bg as provider
 
 = 3.6.0 =
 Remove Nekorekten.com

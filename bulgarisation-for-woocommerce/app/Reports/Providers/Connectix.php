@@ -6,9 +6,6 @@ defined( 'ABSPATH' ) || exit;
 use Woo_BG\Container\Client;
 
 class Connectix extends Provider_Base {
-    const REPORTS_URL = 'https://api.nekorekten.com/api/v1/reports';
-	const IMAGES_BASE_URL = 'https://api.nekorekten.com';
-
 	public function __construct() {
         $this->set_name( __('Connectix', 'bulgarisation-for-woocommerce' ) );
     }
@@ -27,7 +24,6 @@ class Connectix extends Provider_Base {
 		if ( $meta && !$force ) {
 			$result = $meta;
 		} else {
-            $container = woo_bg()->container();
 		    $result = $container[ Client::CONNECTIX ]->api_call( $container[ Client::CONNECTIX ]::CHECK_ENDPOINT, [ 'phone' => $phone ] );
 
             $order->update_meta_data( $meta_key, $result );
@@ -44,7 +40,7 @@ class Connectix extends Provider_Base {
                 $args['reports'] = [ sprintf( __('Possibility that the shipment will not be picked up: %s', 'bulgarisation-for-woocommerce'), $levels[ $result_index ]['label'] ), ];
             }
         } else {
-            $args['error'] = sprintf( __('Error: %s'), $result );
+            $args['error'] = sprintf( __( 'Error: %s', 'bulgarisation-for-woocommerce' ), $result );
         }
 
 		return $args;
@@ -87,6 +83,8 @@ class Connectix extends Provider_Base {
     }
 
 	public static function check_for_reports_on_checkout( $phone ) {
+        $container = woo_bg()->container();
+        $levels = $container[ Client::CONNECTIX ]::get_levels_of_probability();
         $result = $container[ Client::CONNECTIX ]->api_call( $container[ Client::CONNECTIX ]::CHECK_ENDPOINT, [ 'phone' => $phone ] );
         $result_index = array_search( $result, array_column( $levels, 'key' ), true );
         $reports = [];

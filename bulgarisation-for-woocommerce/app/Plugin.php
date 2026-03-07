@@ -4,7 +4,7 @@ namespace Woo_BG;
 defined( 'ABSPATH' ) || exit;
 
 class Plugin {
-	const VERSION = '3.6.0';
+	const VERSION = '3.6.1';
 
 	protected static $_instance;
 
@@ -72,6 +72,10 @@ class Plugin {
 
 		if ( woo_bg_get_option( 'reports', 'enable_connectix' ) && !woo_bg_get_option( 'connectix', 'level_of_warning' )  ) {
 			woo_bg_set_option( 'connectix', 'level_of_warning', 'high' );
+		}
+
+		if ( woo_bg_get_option( 'reports', 'enable_nepostop' ) && !woo_bg_get_option( 'nepostop', 'level_of_warning' )  ) {
+			woo_bg_set_option( 'nepostop', 'level_of_warning', '20' );
 		}
 
 		if ( !woo_bg_get_option( 'shippings', 'woo_bg_econt_is_courier' ) ) {
