@@ -102,7 +102,7 @@ class Method extends \WC_Shipping_Method {
 				}
 			}
 
-			if ( !$rate['cost'] ) {
+			if ( !$rate['cost'] && $rate['meta_data']['validated'] ) {
 				$this->free_shipping = true;
 			}
 		}
@@ -334,6 +334,10 @@ class Method extends \WC_Shipping_Method {
 	}
 
 	private function generate_receiver_address() {
+		if ( empty( $this->cookie_data['state'] ) ) {
+			return [];
+		}
+		
 		$country = $this->cookie_data['country'];
 		$states = $this->container[ Client::ECONT_CITIES ]->get_regions( $country );
 		$state = $states[ $this->cookie_data['state'] ];

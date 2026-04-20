@@ -13,6 +13,9 @@ use Woo_BG\Cron\Speedy as Speedy_Cron;
 use Woo_BG\Admin\BoxNow as BoxNow_Admin;
 use Woo_BG\Cron\BoxNow as BoxNow_Cron;
 
+use Woo_BG\Admin\Pigeon as Pigeon_Admin;
+use Woo_BG\Cron\Pigeon as Pigeon_Cron;
+
 defined( 'ABSPATH' ) || exit;
 
 class Register {
@@ -20,6 +23,7 @@ class Register {
 		self::maybe_register_econt();
 		self::maybe_register_speedy();
 		self::maybe_register_boxnow();
+		self::maybe_register_pigeon();
 		self::maybe_register_cvc();
 
 		if ( woo_bg_is_shipping_enabled() ) {
@@ -121,6 +125,29 @@ class Register {
 		add_action( 'wp_enqueue_scripts', array( 'Woo_BG\Shipping\BoxNow\Method', 'enqueue_scripts' ) );
 	}
 
+	public static function maybe_register_pigeon() {
+		if ( woo_bg_get_option( 'apis', 'enable_pigeon' ) !== 'yes' ) {
+			return;
+		}
+
+		new Pigeon_Cron();
+		new Pigeon\Address();
+		new Pigeon\Office();
+		new Pigeon\Locker();
+		new Pigeon_Admin();
+
+		add_filter( 'woocommerce_shipping_methods', array( __CLASS__, 'register_pigeon_method' ) );
+		add_action( 'woocommerce_after_checkout_validation', array( 'Woo_BG\Shipping\Pigeon\Method', 'validate_pigeon_method' ), 20, 2 );
+		add_action( 'woocommerce_checkout_order_processed', array( 'Woo_BG\Shipping\Pigeon\Method', 'save_label_data_to_order' ), 20, 2 );
+
+		if ( woo_bg_get_option( 'pigeon', 'label_after_checkout' ) === 'yes' ) {
+			add_action( 'woocommerce_checkout_order_processed', array( 'Woo_BG\Admin\Pigeon', 'generate_label_after_order_generated' ), 25 );
+		}
+		
+		add_action( 'woocommerce_email_order_details', array( 'Woo_BG\Shipping\Pigeon\Method', 'add_label_number_to_email' ), 1, 4 );
+		add_action( 'wp_enqueue_scripts', array( 'Woo_BG\Shipping\Pigeon\Method', 'enqueue_scripts' ) );
+	}
+
 	public static function register_econt_method( $methods ) {
 		$methods[ Econt\Method::METHOD_ID ] = 'Woo_BG\Shipping\Econt\Method';
 
@@ -145,6 +172,12 @@ class Register {
 		return $methods;
 	}
 
+	public static function register_pigeon_method( $methods ) {
+		$methods[ Pigeon\Method::METHOD_ID ] = 'Woo_BG\Shipping\Pigeon\Method';
+
+		return $methods;
+	}
+
 	public static function update_order_review( $array ) {
 	    $packages = WC()->cart->get_shipping_packages();
 
@@ -159,8 +192,13 @@ class Register {
 	}
 
 	public static function change_price_label_if_not_calculated( $output, $method ) {
+		$chosen_methods = WC()->session->get( 'chosen_shipping_methods', array() );
+		$chosen_method = $chosen_methods[0] ?? '';
+
 		if ( strpos( $method->label, __('Free shipping', 'bulgarisation-for-woocommerce') ) !== false ) {
 			$output = __( 'Free shipping', 'bulgarisation-for-woocommerce' );
+		} else if( $chosen_method !== $method->get_id() && $method->cost <= 0 ) {
+			$output = __( 'Choose to calculate', 'bulgarisation-for-woocommerce' );	
 		} else if ( strpos( $method->get_method_id(), 'woo_bg' ) !== false && $method->cost <= 0 ) {
 			$output = __( 'Not calculated', 'bulgarisation-for-woocommerce' );
 		}
@@ -173,6 +211,11 @@ class Register {
 			return $label;
 		}
 
+		$chosen_methods = WC()->session->get( 'chosen_shipping_methods', array() );
+
+		$chosen_method = $chosen_methods[0] ?? '';
+
+
 		$meta_data = $rate->get_meta_data();
 
 		if ( !empty( $meta_data['free_shipping'] ) && $meta_data['free_shipping'] == true ) {
@@ -184,7 +227,11 @@ class Register {
 			) && 
 			empty( $rate->get_cost() )
 		) {
-			$label = sprintf( __( '%s: <span class="woocommerce-Price-amount">%s</span>', 'bulgarisation-for-woocommerce' ), $label, __( 'Not calculated', 'bulgarisation-for-woocommerce' ) );
+			if ( $chosen_method !== $rate->get_id() ) {
+				$label = sprintf( __( '%s: <span class="woocommerce-Price-amount">%s</span>', 'bulgarisation-for-woocommerce' ), $label, __( 'Choose to calculate', 'bulgarisation-for-woocommerce' ) );	
+			} else {
+				$label = sprintf( __( '%s: <span class="woocommerce-Price-amount">%s</span>', 'bulgarisation-for-woocommerce' ), $label, __( 'Not calculated', 'bulgarisation-for-woocommerce' ) );
+			}
 		}
 
 		return $label;

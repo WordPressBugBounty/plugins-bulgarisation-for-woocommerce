@@ -1,5 +1,4 @@
 <?php
-use Woo_BG\Export\Nra\Xml\PaymentTypes;
 use Woo_BG\File;
 
 function woo_bg_assets_bundle( $path ) {
@@ -101,12 +100,12 @@ function woo_bg_get_payment_types() {
 
 function woo_bg_get_payment_types_for_meta() {
 	return array(
-		'1' => PaymentTypes\WithoutPostPayment::class, //1
-		'2' => PaymentTypes\VirtualPOSTerminal::class, //2
-		'3' => PaymentTypes\WithPostPayment::class, //3
-		'4' => PaymentTypes\PaymentService::class, //4
-		'5' => PaymentTypes\Other::class, //5
-		'6' => PaymentTypes\ReflectedWithReceipt::class, //5
+		'1' => 'WithoutPostPayment', //1
+		'2' => 'VirtualPOSTerminal', //2
+		'3' => 'WithPostPayment', //3
+		'4' => 'PaymentService', //4
+		'5' => 'Other', //5
+		'6' => 'ReflectedWithReceipt', //6
 	);
 }
 
@@ -312,17 +311,17 @@ function woo_bg_get_vat_group_from_rate( $rate ) {
 	return $group;
 }
 
-function woo_bg_tax_based_price( $price, $rate = 20 ) {
-	if ( wc_tax_enabled() ) {
-		$price = round( $price - woo_bg_calculate_vat_from_price( $price, $rate ), 2, PHP_ROUND_HALF_DOWN );
+function woo_bg_tax_based_price( $price, $rate = 20, $force = false ) {
+	if ( wc_tax_enabled() || $force ) {
+		$price = $price - woo_bg_calculate_vat_from_price( $price, $rate );
 	}
 
-	return number_format( $price, 2 );
+	return number_format( round($price, 2), 2, '.', '' );
 }
 
 function woo_bg_calculate_vat_from_price( $price, $rate = 20 ) {
 	$vat = (new \WC_Tax)::calc_tax( $price, array( array('compound' => 'yes', 'rate' => $rate ) ), true )[0];
-    $vat = round( $vat, 3, PHP_ROUND_HALF_DOWN );
+    $vat = round( $vat, 3, PHP_ROUND_HALF_UP );
     $vat = number_format( $vat, 2, '.', '');
     
     return $vat;
@@ -420,6 +419,7 @@ function woo_bg_is_shipping_enabled() {
 		woo_bg_get_option( 'apis', 'enable_econt' ) === 'yes' || 
 		woo_bg_get_option( 'apis', 'enable_cvc' ) === 'yes' || 
 		woo_bg_get_option( 'apis', 'enable_boxnow' ) === 'yes' || 
+		woo_bg_get_option( 'apis', 'enable_pigeon' ) === 'yes' || 
 		woo_bg_get_option( 'apis', 'enable_speedy' ) === 'yes' 
 	) {
 		$enabled = true;
@@ -450,12 +450,10 @@ function woo_bg_get_order_label( $order_id ) {
 		switch ( $method ) {
 			case 'woo_bg_speedy':
 				$shipment_status = $order->get_meta( 'woo_bg_speedy_shipment_status' );
-				
+
 				if ( $shipment_status && $label_data['id'] ) {
-					$data = [
-						'number' => $label_data['id'],
-						'link' => admin_url( 'admin-ajax.php' ) . '?cache-buster=' . rand() . '&action=woo_bg_speedy_print_labels&parcels=' . implode('|', wp_list_pluck( $shipment_status['parcels'], 'id' ) ) . "&size=A6",
-					];
+					$data['number'] = $label_data['id'];
+					$data['link'] = admin_url( 'admin-ajax.php' ) . '?cache-buster=' . rand() . '&action=woo_bg_speedy_print_labels&parcels=' . implode('|', wp_list_pluck( $shipment_status['parcels'], 'id' ) ) . "&size=A6";
 				}
 				break;
 			case 'woo_bg_econt':
@@ -470,9 +468,9 @@ function woo_bg_get_order_label( $order_id ) {
 				break;
 			case 'woo_bg_cvc':
 				$shipment_status = $order->get_meta( 'woo_bg_cvc_shipment_status' );
-
 				if ( $shipment_status && !empty( $shipment_status['pdf'] ) ) {
 					$data = [
+						'courier' => __( 'CVC', 'bulgarisation-for-woocommerce' ),
 						'number' => $label_data['wb'],
 						'link' => $shipment_status['pdf'],
 					];
@@ -480,8 +478,6 @@ function woo_bg_get_order_label( $order_id ) {
 				
 				break;
 			case 'woo_bg_boxnow':
-				$data = ['items'];
-
 				if ( isset( $label_data['parcels'] ) && is_array( $label_data['parcels'] ) ) {
 					foreach ( $label_data['parcels'] as $parcel ) {
 						$data['items'][] = [
@@ -492,11 +488,44 @@ function woo_bg_get_order_label( $order_id ) {
 				}
 				
 				break;
+			case 'woo_bg_pigeon':
+				$shipment_status = $order->get_meta( 'woo_bg_pigeon_shipment_status' );
+				if ( $shipment_status && !empty( $label_data['data']['reference_number'] ) ) {
+					$data = [
+						'number' => $label_data['data']['reference_number'],
+						'link' => admin_url( 'admin-ajax.php' ) . '?cache-buster=' . rand() . '&action=woo_bg_pigeon_print_labels&order-id=' . $order->get_id(),
+					];
+				}
+				
+				break;
 		}
 	}
 
 	if ( $method ) {
 		$data['method'] = $method;
+
+		switch ( $method ) {
+			case 'woo_bg_speedy':
+				$data['courier'] = __( 'Speedy', 'bulgarisation-for-woocommerce' );
+
+				break;
+			case 'woo_bg_econt':
+				$data['courier'] = __( 'Econt', 'bulgarisation-for-woocommerce' );
+
+				break;
+			case 'woo_bg_cvc':
+				$data['courier'] = __( 'CVC', 'bulgarisation-for-woocommerce' );
+
+				break;
+			case 'woo_bg_boxnow':
+				$data['courier'] = __( 'BOX NOW', 'bulgarisation-for-woocommerce' );
+				
+				break;
+			case 'woo_bg_pigeon':
+				$data['courier'] = __( 'Pigeon Express', 'bulgarisation-for-woocommerce' );
+				
+				break;
+		}
 	}
 
 	return apply_filters( 'woo_bg/column/order/shipment_status_data', $data, $order );
@@ -520,6 +549,10 @@ function woo_bg_get_label_data_for_shipping_method( $shipping ) {
 		}
 	} elseif ( $shipping['method_id'] === 'woo_bg_boxnow' ) {
 		if ( $label = $order->get_meta( 'woo_bg_boxnow_shipment_status' ) ) {
+			$label_data = $label;
+		}
+	} elseif ( $shipping['method_id'] === 'woo_bg_pigeon' ) {
+		if ( $label = $order->get_meta( 'woo_bg_pigeon_shipment_status' ) ) {
 			$label_data = $label;
 		}
 	}
@@ -593,42 +626,163 @@ function woo_bg_get_next_document_number( $meta_field ) {
 
 function woo_bg_strip_street_prefix( $street ) {
     $prefixes = [
-        'ул.',   
-        'бул.',  
-        'пл.',   
-        'пр.',   
-        'кв.',   
-        'ж.к.',  
+        // Cyrillic prefixes
+        'ул.',
+        'бул.',
+        'пл.',
+        'пр.',
+        'кв.',
+        'ж.к.',
         'ж.к',
         'жк.',
         'жк',
-        'ul.',   
+        // Latin prefixes (stripped before transliteration)
+        'ul.',
         'ul ',
-        'bul.',  
+        'bul.',
         'bul ',
-        'pl.',   
+        'pl.',
         'pl ',
-        'pr.',   
+        'pr.',
         'pr ',
-        'kv.',   
+        'kv.',
         'kv ',
-        'zh.k.', 
+        'zh.k.',
         'zh.k',
         'zhk.',
         'zhk',
-        'j.k.',  
+        'j.k.',
         'j.k',
         'jk.',
         'jk',
     ];
 
+    $street = preg_replace( '/\.(?=\S)/u', '. ', $street );
+
     foreach ( $prefixes as $prefix ) {
         if ( mb_stripos( $street, $prefix ) === 0 ) {
             $street = mb_substr( $street, mb_strlen( $prefix ) );
-            $street = ltrim( $street ); 
+            $street = ltrim( $street );
             break;
         }
     }
 
     return $street;
+}
+
+function woo_bg_title_case_bg(string $string, string $encoding = 'UTF-8') {
+    $smallWords = [
+        'и', 'или', 'а', 'но', 'че',
+        'в', 'във', 'с', 'със', 'у', 'към',
+        'на', 'за', 'от', 'до', 'по', 'под', 'над', 'пред', 'при', 'през',
+        'без', 'след', 'преди', 'между', 'сред', 'чрез'
+    ];
+
+    $string = trim(preg_replace('/\s+/u', ' ', $string));
+    $string = mb_strtolower($string, $encoding);
+
+    $parts = preg_split('/(\s+)/u', $string, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $result = [];
+    $wordIndex = 0;
+
+    foreach ($parts as $part) {
+        if (preg_match('/^\s+$/u', $part)) {
+            $result[] = $part;
+            continue;
+        }
+
+        $word = $part;
+        $word = preg_replace_callback('/^\p{L}/u', function ($m) use ($encoding) {
+            return mb_strtoupper($m[0], $encoding);
+        }, $word);
+
+        $word = preg_replace_callback('/(\.)(\p{L})/u', function ($m) use ($encoding) {
+            return $m[1] . mb_strtoupper($m[2], $encoding);
+        }, $word);
+
+        if ($wordIndex > 0 && in_array($part, $smallWords, true)) {
+            $word = $part;
+        }
+
+        $result[] = $word;
+        $wordIndex++;
+    }
+
+    return implode('', $result);
+}
+
+function woo_bg_impossible_prices_get_tax_classes_data() {
+	if ( ! function_exists( 'WC' ) ) {
+		return array();
+	}
+
+	$data = array();
+
+	$standard_rates = WC_Tax::get_rates( '' );
+	$standard_total = 0.0;
+
+	if ( ! empty( $standard_rates ) ) {
+		foreach ( $standard_rates as $rate ) {
+			if ( isset( $rate['rate'] ) ) {
+				$standard_total += (float) $rate['rate'];
+			}
+		}
+	}
+
+	$data[''] = $standard_total / 100;
+
+	if ( method_exists( 'WC_Tax', 'get_tax_class_slugs' ) ) {
+		$tax_class_slugs = WC_Tax::get_tax_class_slugs();
+	} else {
+		$tax_class_slugs = array();
+	}
+
+	foreach ( $tax_class_slugs as $tax_class_slug ) {
+		$rates = WC_Tax::get_rates( $tax_class_slug );
+		$total = 0.0;
+
+		if ( ! empty( $rates ) ) {
+			foreach ( $rates as $rate ) {
+				if ( isset( $rate['rate'] ) ) {
+					$total += (float) $rate['rate'];
+				}
+			}
+		}
+
+		$data[ (string) $tax_class_slug ] = $total / 100;
+	}
+
+	return $data;
+}
+
+function woo_bg_impossible_prices_get_product_tax_rate() {
+	global $post;
+
+	if ( ! $post || 'product' !== get_post_type( $post ) ) {
+		return 0.0;
+	}
+
+	$product = wc_get_product( $post->ID );
+
+	if ( ! $product instanceof WC_Product ) {
+		return 0.0;
+	}
+
+	if ( 'taxable' !== $product->get_tax_status() ) {
+		return 0.0;
+	}
+
+	$tax_class = $product->get_tax_class();
+	$rates     = WC_Tax::get_rates( $tax_class );
+	$total     = 0.0;
+
+	if ( ! empty( $rates ) ) {
+		foreach ( $rates as $rate ) {
+			if ( isset( $rate['rate'] ) ) {
+				$total += (float) $rate['rate'];
+			}
+		}
+	}
+
+	return $total / 100;
 }

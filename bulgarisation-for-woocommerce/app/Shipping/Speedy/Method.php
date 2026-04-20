@@ -85,7 +85,7 @@ class Method extends \WC_Shipping_Method {
 				( isset( $this->cookie_data['other'] ) && $this->cookie_data['other'] && $this->cookie_data['selectedAddress'] ) || 
 				( isset( $this->cookie_data['streetNumber']) && $this->cookie_data['streetNumber'] && $this->cookie_data['selectedAddress'] ) || 
 				( isset( $this->cookie_data['selectedOffice'] ) && $this->cookie_data['selectedOffice'] ) ||
-				( isset( $this->cookie_data['mysticQuarter'] ) && $this->cookie_data['other'] )
+				( isset( $this->cookie_data['mysticQuarter'] ) && ( $this->cookie_data['other'] || $this->cookie_data['streetNumber'] ) )
 			) 
 		) {
 			$request_data = $this->calculate_shipping_price_from_api();
@@ -167,7 +167,7 @@ class Method extends \WC_Shipping_Method {
 				'title'       => __( 'Fixed price', 'bulgarisation-for-woocommerce' ),
 				'type'        => 'number',
 				'placeholder' => '0',
-				'description' => __( 'Enter a fixed price that the users will pay. The remaining will be payed by you.', 'bulgarisation-for-woocommerce' ),
+				'description' => __( 'Enter a fixed price that will be payed by the client, and will be included in the COD.', 'bulgarisation-for-woocommerce' ),
 				'default'     => '',
 				'desc_tip'    => true,
 			),
@@ -205,13 +205,15 @@ class Method extends \WC_Shipping_Method {
 
 		WC()->session->set( 'woo-bg-speedy-label' , $request_body );
 
-		$request = $this->container[ Client::SPEEDY ]->api_call( $this->container[ Client::SPEEDY ]::CALC_LABELS_ENDPOINT, $request_body );
+		$request = $this->container[ Client::SPEEDY ]->label_request( 'calculate', $request_body );
 
 		if ( !isset( $request ) ) {
 			$data['errors'] = __( 'Calculation failed. Please try again.', 'bulgarisation-for-woocommerce' );
 		} else if ( isset( $request['error'] ) || isset( $request['calculations'][0]['error'] ) ) {
 			if ( isset( $request['calculations'][0]['error'] ) ) {
 				$data['errors'] = $request['calculations'][0]['error']['message'];
+			} else if ( isset( $request['success'] ) && !$request['success'] && isset( $request['error'] ) ) {
+				$data['errors'] = $request['error'];
 			} else {
 				$data['errors'] = $request['error']['message'];
 			}
@@ -401,14 +403,16 @@ class Method extends \WC_Shipping_Method {
 			$names[] = $name;
 
 			if ( $auto_sizes && $item['data']->get_length() && $item['data']->get_width() && $item['data']->get_height() ) {
-				$sizes[] = new Product( 
-					$name, 
-					new Size( 
-						wc_get_dimension( $item['data']->get_length(), 'mm', get_option( 'woocommerce_dimension_unit' ) ), 
-						wc_get_dimension( $item['data']->get_width(), 'mm', get_option( 'woocommerce_dimension_unit' ) ), 
-						wc_get_dimension( $item['data']->get_height(), 'mm', get_option( 'woocommerce_dimension_unit' ) ),
-					) 
-				);
+				foreach ( range( 1, $item['quantity'] ) as $i ) {
+					$sizes[] = new Product( 
+						$name, 
+						new Size( 
+							wc_get_dimension( $item['data']->get_length(), 'mm', get_option( 'woocommerce_dimension_unit' ) ), 
+							wc_get_dimension( $item['data']->get_width(), 'mm', get_option( 'woocommerce_dimension_unit' ) ), 
+							wc_get_dimension( $item['data']->get_height(), 'mm', get_option( 'woocommerce_dimension_unit' ) ),
+						) 
+					);
+				}
 			}
 		}
 
@@ -438,7 +442,7 @@ class Method extends \WC_Shipping_Method {
 		$content['parcels'] = [ [
 			'seqNo' => 1,
 			'weight' => $weigth,
-			'sizes' => $pack_sizes,
+			'size' => $pack_sizes,
 		]];
 
 		return array(
@@ -571,6 +575,10 @@ class Method extends \WC_Shipping_Method {
 				$payment[ 'declaredValuePayer' ] = 'SENDER';
 				$payment[ 'packagePayer' ] = 'SENDER';
 			}
+		}
+
+		if ( woo_bg_get_option( 'speedy', 'administrative_fee' ) === 'yes' ) {
+			$payment["administrativeFee"] = true;
 		}
 
 		return array(

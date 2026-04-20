@@ -5,7 +5,7 @@ Requires at least: 5.3
 Tested up to: 6.9
 Donate link: https://revolut.me/tihomi9gj5
 Requires PHP: 7.4
-Stable tag: 3.6.3
+Stable tag: 4.0.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -16,6 +16,7 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Този плъгин добавя възможност за:
 
 *   Генериране на одиторски XML файл съобразно Наредба - H-18. 
+*   Проверка на цените в магазина за "Математически невъзможни цени с ДДС".
 *   Генериране на документ за поръчката. 
 *   Генериране на фактури за поръчката. 
 *   Генериране на кредитно известие при върната поръчка.
@@ -27,6 +28,7 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 *   Добавена възможност за добавяне на вече създадени поръчки към одиторският файл.
 *   Добавени методи за доставка с [Еконт](https://www.econt.com/).
 *   Добавени методи за доставка със [BOX NOW](https://boxnow.bg/e-shops).
+*   Добавени методи за доставка със [Pigeon Express](https://pigeonexpress.com/).
 *   Добавени методи за доставка със [Спиди](https://speedy.bg/).
 *   Добавени методи за доставка със [CVC](https://cvc.bg/).
 *   Добавена възможност за показване на цените в две валути BGN/EUR.
@@ -41,8 +43,7 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 *   За да работи коректно плъгина моля попълнете всички задължителни полета, включително настройките за всеки платежен метод.
 *   При нужда свържете се с вашият счетоводител, ако не сте сигурни за някое от полетата.
-*   За да използвате отзивите от nekorekten.com трябва да включите опцията в главните настройки на плъгина и да добавите API ключ в новопоявилия се таб.
-*   За да използвате методи на доставка с Еконт/BOX NOW/CVC/Спиди, трябва да включите опцията в главните настройки на плъгина. След запазване и презареждане на страницата ще се появи нов таб с настройките за Еконт/BOX NOW/CVC/Спиди. След това добавете желаните методи за доставка ( за адрес и офис трябва да имате 2 метода за доставка ) в зоните за доставка - WooCommerce >> Настройки >> Доставка >> Зони за доставка.
+*   За да използвате методи на доставка с Еконт/BOX NOW/Pigeon Express/CVC/Спиди, трябва да включите опцията в главните настройки на плъгина. След запазване и презареждане на страницата ще се появи нов таб с настройките за Еконт/BOX NOW/CVC/Спиди. След това добавете желаните методи за доставка ( за адрес и офис трябва да имате 2 метода за доставка ) в зоните за доставка - WooCommerce >> Настройки >> Доставка >> Зони за доставка.
 
 [Facebook група](https://www.facebook.com/groups/bulgarisationforwoocommerce/)
 [GitHub](https://github.com/susameca/bulgarisation-for-woocommerce) хранилището на плъгина където можете да допринесете към развитието на плъгина.
@@ -97,6 +98,9 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
     - https://widget-v5.boxnow.bg/
     - https://api-production.boxnow.bg/
     - https://api-stage.boxnow.bg/
+  - Pigeon Express
+    - https://api.pigeonexpress.com/v1
+    - https://api-demo.pigeonexpress.com/v1
   - CVC
     - https://lox.e-cvc.bg/
 
@@ -115,6 +119,15 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 При работа с тези външни услуги могат да бъдат изпращани данни като: име и адрес на получателя, телефон, имейл, стойност на поръчката, наложен платеж, както и друга информация, необходима за създаване на товарителници и/или проверка на коректността на клиента. Данните се изпращат единствено с цел обработка и доставка на поръчката и проверка за потенциални злоупотреби.
 
 == Changelog ==
+
+= 4.0.0 =
+Add integration with Pigeon express
+Add impossible vat prices functionality
+Add separate invoice/credit notice copy documents with accountant email
+Speedy,BoxNow: Optimize label pdf rendering
+Order Columns: Optimize labels text
+NRA export: Optimizations
+Speedy: Optimizations
 
 = 3.6.3 =
 Invoices: View file optimizations

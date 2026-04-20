@@ -4,7 +4,7 @@ namespace Woo_BG;
 defined( 'ABSPATH' ) || exit;
 
 class Plugin {
-	const VERSION = '3.6.3';
+	const VERSION = '4.0.0';
 
 	protected static $_instance;
 
@@ -120,6 +120,10 @@ class Plugin {
 
 			if ( woo_bg_get_option( 'nap', 'vat_113_9' ) === 'yes' && ! wc_tax_enabled() ) {
 				new Invoice\Vat1139();
+			}
+
+			if ( woo_bg_get_option( 'invoice', 'nra_n18' ) === 'yes' ) {
+				new Admin\ImpossibleVatPrice();
 			}
 		}
 

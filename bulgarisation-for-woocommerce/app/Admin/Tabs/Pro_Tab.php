@@ -46,7 +46,7 @@ class Pro_Tab extends Base_Tab {
 						<?php echo wp_kses_post(  wpautop( " - " . __( 'Changing the default radio buttons for shipping methods with more stylish buttons.', 'bulgarisation-for-woocommerce' ) ) ); ?>
 					</li>
 					<li>
-						<?php echo wp_kses_post( wpautop( " - " .  __( 'Allow shipping to Greece and Romania for Econt and Speedy.', 'bulgarisation-for-woocommerce' ) ) ); ?>
+						<?php echo wp_kses_post( wpautop( " - " .  __( 'Allow shipping to Greece and Romania for Econt, BOXNOW and Speedy.', 'bulgarisation-for-woocommerce' ) ) ); ?>
 					</li>
 					<li>
 						<?php echo wp_kses_post( wpautop( " - " .  __( 'Option to include order ID in label.', 'bulgarisation-for-woocommerce' ) ) ); ?>
@@ -60,6 +60,10 @@ class Pro_Tab extends Base_Tab {
 
 					<li>
 						<?php echo wp_kses_post( wpautop( " - " .  __( 'Allow automatically filling company info from EIK.', 'bulgarisation-for-woocommerce' ) ) ); ?>
+					</li>
+
+					<li>
+						<?php echo wp_kses_post( wpautop( " - " .  __( 'Remove the limit of 100 orders for NRA XML Export for N-18', 'bulgarisation-for-woocommerce' ) ) ); ?>
 					</li>
 				</ul>
 				<?php
