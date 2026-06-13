@@ -63,6 +63,12 @@ class Method extends \WC_Shipping_Method {
 		$this->cookie_data = self::get_cookie_data();
 		$this->package = $package;
 
+		$disable_aps = ( $this->delivery_type === 'automat' && $this->is_aps_not_allowed( $this->package ) );
+
+		if( apply_filters( 'woo_bg/econt/rate/disable_aps', $disable_aps, $this ) ) {
+			return;
+		}
+
 		do_action( 'woo_bg/econt/rate/before_calculate', $this );
 
 		$rate = array(
@@ -138,6 +144,7 @@ class Method extends \WC_Shipping_Method {
 				'default'           => '',
 				'options'           => array(
 					'office' => __( 'Office', 'bulgarisation-for-woocommerce' ),
+					'automat' => __( 'Automat', 'bulgarisation-for-woocommerce' ),
 					'address' => __( 'Address', 'bulgarisation-for-woocommerce' ),
 				),
 			),
@@ -266,7 +273,7 @@ class Method extends \WC_Shipping_Method {
 
 			if ( $this->cookie_data['type'] === 'address' ) {
 				$label['receiverAddress'] = $this->generate_receiver_address();
-			} else if ( $this->cookie_data['type'] === 'office' ) {
+			} else if ( in_array( $this->cookie_data['type'], [ 'office', 'automat' ], true ) ) {
 				$label['receiverOfficeCode'] = $this->generate_receiver_office_code();
 			}
 		}
@@ -528,6 +535,63 @@ class Method extends \WC_Shipping_Method {
 		return $payment_by_data;
 	}
 
+	public function is_aps_not_allowed( $package ) {
+		$has_oversize_item = false;
+		$weight_limit = 0;
+		
+		foreach ( $package[ 'contents' ] as $key => $cart_item ) {
+			$_product = $cart_item['data'];
+			$has_oversize_item = self::determine_item_size( 
+				wc_get_dimension( $_product->get_height(), 'cm', get_option( 'woocommerce_dimension_unit' ) ),
+				wc_get_dimension( $_product->get_width(), 'cm', get_option( 'woocommerce_dimension_unit' ) ),
+				wc_get_dimension( $_product->get_length(), 'cm', get_option( 'woocommerce_dimension_unit' ) )
+			);
+			
+			$weight_limit += wc_get_weight( $_product->get_weight(), 'kg' ) * $cart_item['quantity'];
+		}
+
+		$weight_limit = apply_filters( 'woo_bg/econt/rate/aps_weight_limit', $weight_limit, $this );
+		
+		if ( $weight_limit > 20 ) {
+			$has_oversize_item = true;
+		}
+
+		return $has_oversize_item;
+	}
+
+	public static function determine_item_size( $height, $width, $length ) {
+		$max_diagonal = 83.82;
+
+		$dimensions = [
+			[
+				'box_size' => 3,
+				'height' => 37,
+				'width' => 44,
+				'length' => 61,
+			],
+		];
+
+		$oversize = false;
+
+		foreach ( $dimensions as $size ) {
+			if (
+				$height > $size['height'] &&
+				$width > $size['width'] &&
+				$length > $size['length']
+			) {
+				$oversize = true;
+			} else {
+				$max_side = max( $length, $width, $height );
+				
+				if ( $max_side > $max_diagonal ) {
+					$oversize = true;
+				}
+			}
+		}
+
+		return $oversize;
+	}
+
 	public static function validate_econt_method( $fields, $errors ){
 		if ( ! WC()->cart->needs_shipping() ) {
 			return;
@@ -559,6 +623,14 @@ class Method extends \WC_Shipping_Method {
 						empty( $cookie_data['selectedOffice'] ) 
 					) {
 						$errors->add( 'validation', __( 'Please choose a office.', 'bulgarisation-for-woocommerce' ) );
+					}
+
+					if (
+						! empty( $cookie_data ) &&
+						( !empty( $cookie_data['type'] ) && $cookie_data['type'] === 'automat' ) &&
+						empty( $cookie_data['selectedOffice'] )
+					) {
+						$errors->add( 'validation', __( 'Please choose a automat.', 'bulgarisation-for-woocommerce' ) );
 					}
 
 					if(
@@ -642,6 +714,10 @@ class Method extends \WC_Shipping_Method {
 
 		wp_localize_script( 'woo-bg-js-econt', 'wooBg_econt', array(
 			'i18n' => Office::get_i18n(),
+		) );
+
+		wp_localize_script( 'woo-bg-js-econt', 'wooBg_econt_automat', array(
+			'i18n' => Office::get_automat_i18n(),
 		) );
 
 		wp_enqueue_style(

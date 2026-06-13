@@ -164,10 +164,12 @@ class Export_Tab extends Base_Tab {
 				"message" => __( 'No orders found for this month.', 'bulgarisation-for-woocommerce' ),
 			) );
 		}
-
+		
+		clearstatcache( true, $generated_file['temp_file'] );
 		header('Content-type: application/zip');
 		header('Content-Disposition: attachment; filename="' . $generated_file['file_name'] . '"');
 		header("Content-length: " . filesize( $generated_file['temp_file'] ) );
 		echo file_get_contents( $generated_file['temp_file'] );
+		exit;
 	}
 }
