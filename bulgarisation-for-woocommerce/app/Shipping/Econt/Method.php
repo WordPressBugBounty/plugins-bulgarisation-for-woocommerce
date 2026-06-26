@@ -63,7 +63,7 @@ class Method extends \WC_Shipping_Method {
 		$this->cookie_data = self::get_cookie_data();
 		$this->package = $package;
 
-		$disable_aps = ( $this->delivery_type === 'automat' && $this->is_aps_not_allowed( $this->package ) );
+		$disable_aps = ( $this->delivery_type === 'automat' && ! APSBoxes::package_fits_largest_automat( $this->package ) );
 
 		if( apply_filters( 'woo_bg/econt/rate/disable_aps', $disable_aps, $this ) ) {
 			return;
@@ -80,6 +80,7 @@ class Method extends \WC_Shipping_Method {
 		$rate['meta_data']['delivery_type'] = $this->delivery_type;
 		$rate['meta_data']['validated'] = false;
 		$chosen_shippings = WC()->session->get('chosen_shipping_methods');
+		$country = apply_filters('woo_bg/econt/country_for_validation', $package['destination']['country'], $this );
 
 		if ( 
 			isset( $this->cookie_data['type'] ) && 
@@ -104,7 +105,7 @@ class Method extends \WC_Shipping_Method {
 				$rate['cost'] = $request_data['price'];
 
 				if ( wc_tax_enabled() ) {
-					$rate[ 'taxes' ] = woo_bg_get_shipping_rate_taxes( $request_data['price'] );
+					$rate[ 'taxes' ] = woo_bg_get_shipping_rate_taxes( $request_data['price'], $country );
 				}
 			}
 
@@ -225,7 +226,14 @@ class Method extends \WC_Shipping_Method {
 
 		$request = $this->container[ Client::ECONT ]->api_call( $this->container[ Client::ECONT ]::LABELS_ENDPOINT, $request_body );
 
-		if ( isset( $request['type'] ) && $request['type'] === 'ExInvalidParam' ) {
+		if ( 
+			isset( $request['type'] ) && 
+			( 
+				$request['type'] === 'ExInvalidParam' ||
+				$request['type'] === 'ExException' ||
+				$request['type'] === 'ExInvalidData' 
+			)
+		) {
 			$data['errors'] = $request;
 		} else if ( $this->cookie_data[ 'country' ] !== 'BG' ) {
 			$data['price'] = woo_bg_tax_based_price( $request['label']['senderDueAmount'] );
@@ -407,7 +415,7 @@ class Method extends \WC_Shipping_Method {
 		$sizes = [];
 		$auto_sizes = wc_string_to_bool( woo_bg_get_option( 'econt', 'auto_size' ) );
 		$is_fragile = wc_string_to_bool( woo_bg_get_option( 'econt', 'declared_value' ) );
-
+		
 		foreach ( $this->package[ 'contents' ] as $key => $item ) {
 			if ( $item['data']->get_weight() ) {
 				$cart['weight'] += wc_get_weight( $item['data']->get_weight(), 'kg' ) * $item['quantity'];
@@ -429,17 +437,22 @@ class Method extends \WC_Shipping_Method {
 				}
 			}
 
+			$name = woo_bg_normalize_text_for_label( $name );
 			$names[] = $name;
 
 			if ( $auto_sizes && $item['data']->get_length() && $item['data']->get_width() && $item['data']->get_height() ) {
-				$sizes[] = new Product( 
-					$name, 
-					new Size( 
-						wc_get_dimension( $item['data']->get_length(), 'mm', get_option( 'woocommerce_dimension_unit' ) ), 
-						wc_get_dimension( $item['data']->get_width(), 'mm', get_option( 'woocommerce_dimension_unit' ) ), 
-						wc_get_dimension( $item['data']->get_height(), 'mm', get_option( 'woocommerce_dimension_unit' ) ),
-					) 
-				);
+				$quantity = ! empty( $item['quantity'] ) ? max( 1, (int) $item['quantity'] ) : 1;
+
+				foreach ( range( 1, $quantity ) as $i ) {
+					$sizes[] = new Product( 
+						$name, 
+						new Size( 
+							wc_get_dimension( $item['data']->get_length(), 'mm', get_option( 'woocommerce_dimension_unit' ) ), 
+							wc_get_dimension( $item['data']->get_width(), 'mm', get_option( 'woocommerce_dimension_unit' ) ), 
+							wc_get_dimension( $item['data']->get_height(), 'mm', get_option( 'woocommerce_dimension_unit' ) ),
+						) 
+					);
+				}
 			}
 		}
 
@@ -447,15 +460,37 @@ class Method extends \WC_Shipping_Method {
 			$cart['weight'] = apply_filters( 'woo_bg/econt/label/weight', 1, $this->package, $this );
 		}
 
-		$cart['shipmentDescription'] = implode( ', ', $names );
+		$cart['shipmentDescription'] = woo_bg_normalize_text_for_label( implode( ', ', $names ), 500 );
+		
+		if ( $auto_sizes && $this->delivery_type !== 'automat' ) {
+			$pack = array(
+				'width'  => 17,
+				'height' => 17,
+				'length' => 17,
+				'weight' => $cart['weight'],
+			);
 
-		if ( $auto_sizes && !empty( $sizes ) ) {
-			$packer = new Carton_Packer();
-			$result = $packer->find_best_carton( $sizes );
+			if ( ! empty( $sizes ) ) {
+				$packer = new Carton_Packer();
+				$result = $packer->find_best_carton( $sizes );
 
-			$cart['shipmentDimensionsW'] = wc_get_dimension( $result->W, 'cm', 'mm' );
-			$cart['shipmentDimensionsL'] = wc_get_dimension( $result->L, 'cm', 'mm' );
-			$cart['shipmentDimensionsH'] = wc_get_dimension( $result->H, 'cm', 'mm' );
+				$pack['width']  = wc_get_dimension( $result->W, 'cm', 'mm' );
+				$pack['height'] = wc_get_dimension( $result->H, 'cm', 'mm' );
+				$pack['length'] = wc_get_dimension( $result->L, 'cm', 'mm' );
+			}
+
+			$cart['packCount'] = 1;
+			$cart['packs']     = array( $pack );
+		} else {
+			$cart['packCount'] = 1;
+			$cart['packs']     = [
+				[
+					'width'  => 17,
+					'height' => 17,
+					'length' => 17,
+					'weight' => $cart['weight']
+				]
+			];
 		}
 
 		if ( $this->cookie_data['payment'] === 'cod' ) {
@@ -533,63 +568,6 @@ class Method extends \WC_Shipping_Method {
 		}
 
 		return $payment_by_data;
-	}
-
-	public function is_aps_not_allowed( $package ) {
-		$has_oversize_item = false;
-		$weight_limit = 0;
-		
-		foreach ( $package[ 'contents' ] as $key => $cart_item ) {
-			$_product = $cart_item['data'];
-			$has_oversize_item = self::determine_item_size( 
-				wc_get_dimension( $_product->get_height(), 'cm', get_option( 'woocommerce_dimension_unit' ) ),
-				wc_get_dimension( $_product->get_width(), 'cm', get_option( 'woocommerce_dimension_unit' ) ),
-				wc_get_dimension( $_product->get_length(), 'cm', get_option( 'woocommerce_dimension_unit' ) )
-			);
-			
-			$weight_limit += wc_get_weight( $_product->get_weight(), 'kg' ) * $cart_item['quantity'];
-		}
-
-		$weight_limit = apply_filters( 'woo_bg/econt/rate/aps_weight_limit', $weight_limit, $this );
-		
-		if ( $weight_limit > 20 ) {
-			$has_oversize_item = true;
-		}
-
-		return $has_oversize_item;
-	}
-
-	public static function determine_item_size( $height, $width, $length ) {
-		$max_diagonal = 83.82;
-
-		$dimensions = [
-			[
-				'box_size' => 3,
-				'height' => 37,
-				'width' => 44,
-				'length' => 61,
-			],
-		];
-
-		$oversize = false;
-
-		foreach ( $dimensions as $size ) {
-			if (
-				$height > $size['height'] &&
-				$width > $size['width'] &&
-				$length > $size['length']
-			) {
-				$oversize = true;
-			} else {
-				$max_side = max( $length, $width, $height );
-				
-				if ( $max_side > $max_diagonal ) {
-					$oversize = true;
-				}
-			}
-		}
-
-		return $oversize;
 	}
 
 	public static function validate_econt_method( $fields, $errors ){

@@ -62,6 +62,26 @@ class Method extends \WC_Shipping_Method {
 		$this->cookie_data = self::get_cookie_data();
 		$this->package = $package;
 
+		$disable_aps = (
+			$this->delivery_type === 'locker' &&
+			(
+				! APSBoxes::package_fits_largest_locker( $this->package ) ||
+				! APSBoxes::package_weight_fits_locker( $this->package )
+			)
+		);
+
+		$disable_packages = (
+			in_array( $this->delivery_type, array( 'office', 'address' ), true ) &&
+			! PackageBoxes::package_weight_fits_shipment( $this->package, $this )
+		);
+		
+		if(
+			apply_filters( 'woo_bg/pigeon/rate/disable_aps', $disable_aps, $this ) ||
+			apply_filters( 'woo_bg/pigeon/rate/disable_packages', $disable_packages, $this )
+		) {
+			return;
+		}
+
 		do_action( 'woo_bg/pigeon/rate/before_calculate', $this );
 
 		$rate = array(
@@ -74,6 +94,7 @@ class Method extends \WC_Shipping_Method {
 		$rate['meta_data']['validated'] = false;
 		$payment_by_data = $this->generate_payment_by_data();
 		$chosen_shippings = WC()->session->get('chosen_shipping_methods');
+		$country = apply_filters('woo_bg/pigeon/country_for_validation', $package['destination']['country'], $this );
 
 		if ( 
 			isset( $this->cookie_data['type'] ) && 
@@ -99,7 +120,7 @@ class Method extends \WC_Shipping_Method {
 				$rate['cost'] = $request_data['price'];
 
 				if ( wc_tax_enabled() ) {
-					$rate[ 'taxes' ] = woo_bg_get_shipping_rate_taxes( $request_data['price'] );
+					$rate[ 'taxes' ] = woo_bg_get_shipping_rate_taxes( $request_data['price'], $country );
 				}
 			}
 		}
@@ -111,10 +132,11 @@ class Method extends \WC_Shipping_Method {
 		}
 
 		if ( !$this->free_shipping && !empty( $this->fixed_price ) ) {
-			$rate[ 'cost' ] = woo_bg_tax_based_price( $this->fixed_price );
+			$tax_rate = apply_filters('woo_bg/shipping/fixed_price_tax_rate', 20, $country );
+			$rate[ 'cost' ] = woo_bg_tax_based_price( $this->fixed_price, $tax_rate );
 			
 			if ( wc_tax_enabled() ) {
-				$rate[ 'taxes' ] = woo_bg_get_shipping_rate_taxes( $rate[ 'cost' ] );
+				$rate[ 'taxes' ] = woo_bg_get_shipping_rate_taxes( $rate[ 'cost' ], $country );
 			}
 		}
 
@@ -209,10 +231,11 @@ class Method extends \WC_Shipping_Method {
 
 		$request = $this->container[ Client::PIGEON ]->api_call( $this->container[ Client::PIGEON ]::CALCULATE_ENDPOINT, $request_body, 'POST' );
 		
+
 		if ( isset( $request['success'] ) && !$request['success'] ) {
-			if ( isset( $request['errors'] ) ) {
+			if ( !empty( $request['errors'] ) ) {
 				$data['errors'] = $request['errors'];
-			} else if ( isset( $request['message'] ) ) {
+			} else if ( !empty( $request['message'] ) ) {
 				$data['errors'] = [ [ $request['message'] ] ];
 			} else {
 				$data['errors'] = [ [ __( 'An error occurred while calculating the shipping price. Please try again later.', 'bulgarisation-for-woocommerce' ) ] ];
@@ -352,6 +375,8 @@ class Method extends \WC_Shipping_Method {
 				}
 			}
 
+			$name = woo_bg_normalize_text_for_label( $name );
+
 			$cart_data['inventory_items'][] = array(
 				'description' => $name,
 				'quantity' => $item['quantity'],
@@ -378,9 +403,9 @@ class Method extends \WC_Shipping_Method {
 		$cart_data['packages'][0]['weight'] = $weight;
 
 		if ( empty( $sizes ) ) {
-			$cart_data['packages'][0]['width'] = 40;
-			$cart_data['packages'][0]['length'] = 40;
-			$cart_data['packages'][0]['height'] = 40;
+			$cart_data['packages'][0]['width'] = 17;
+			$cart_data['packages'][0]['length'] = 17;
+			$cart_data['packages'][0]['height'] = 17;
 		} else if ( ( $auto_sizes || $this->cookie_data['type'] === 'locker' ) && !empty( $sizes ) ) {
 			$packer = new Carton_Packer();
 			$result = $packer->find_best_carton( $sizes );

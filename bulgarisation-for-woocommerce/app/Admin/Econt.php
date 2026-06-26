@@ -16,6 +16,10 @@ class Econt {
 		add_action( 'wp_ajax_woo_bg_econt_generate_label', array( __CLASS__, 'generate_label' ) );
 		add_action( 'wp_ajax_woo_bg_econt_delete_label', array( __CLASS__, 'delete_label' ) );
 		add_action( 'wp_ajax_woo_bg_econt_update_shipment_status', array( __CLASS__, 'update_shipment_status' ) );
+
+		add_filter( 'woo_bg/econt/calculate_label', array( __CLASS__, 'set_min_pack_weight' ), 30 );
+		add_filter( 'woo_bg/econt/create_label', array( __CLASS__, 'set_min_pack_weight' ), 30 );
+		add_filter( 'woo_bg/econt/update_label', array( __CLASS__, 'set_min_pack_weight' ), 30 );
 	}
 
 	public static function admin_enqueue_scripts() {
@@ -159,6 +163,9 @@ class Econt {
 			'length' => __('Length', 'bulgarisation-for-woocommerce'),
 			'width' => __('Width', 'bulgarisation-for-woocommerce'),
 			'height' => __('Height', 'bulgarisation-for-woocommerce'),
+			'pack' => __('Pack', 'bulgarisation-for-woocommerce'),
+			'addPack' => __('Add Pack', 'bulgarisation-for-woocommerce'),
+			'removePack' => __('Remove Pack', 'bulgarisation-for-woocommerce'),
 		);
 	}
 
@@ -327,6 +334,7 @@ class Econt {
 		$label = self::update_shipment_type( $label );
 		$label = self::update_phone_and_names( $label );
 		$label = self::update_os_value( $label );
+		$label = self::update_weight( $label );
 
 		$data = self::send_label_to_econt( $label, $order_id );
 
@@ -344,6 +352,7 @@ class Econt {
 
 		$label = $label['label'];
 		$label = self::update_sender( $label );
+		$label = self::update_weight( $label );
 		$label = self::update_label_pay_options( $label, $order_id );
 		$label = self::update_phone_and_names( $label, $order_id );
 
@@ -398,24 +407,70 @@ class Econt {
 			$label['senderOfficeCode'] = str_replace( 'officeID-', '', $office );
 		}
 
-		$new_send_from = map_deep( $_REQUEST['send_from'], 'sanitize_text_field' );
-		$new_send_from_type = sanitize_text_field( $_REQUEST['send_from_type'] );
+		if ( isset( $_REQUEST['send_from'] ) && isset( $_REQUEST['send_from_type'] ) ) {
+			$new_send_from = map_deep( $_REQUEST['send_from'], 'sanitize_text_field' );
+			$new_send_from_type = sanitize_text_field( $_REQUEST['send_from_type'] );
 
-		if ( !empty( $new_send_from ) && !empty( $new_send_from_type ) ) {
-			switch ( $new_send_from_type ) {
-				case 'address':
-					$profile_addresses = $container[ Client::ECONT_PROFILE ]->get_profile_data()['addresses'];
+			if ( !empty( $new_send_from ) && !empty( $new_send_from_type ) ) {
+				switch ( $new_send_from_type ) {
+					case 'address':
+						$profile_addresses = $container[ Client::ECONT_PROFILE ]->get_profile_data()['addresses'];
 
-					$label['senderAddress'] = $profile_addresses[ $new_send_from ];
-					unset( $label['senderOfficeCode'] );
-					break;
-				case 'office':
-					$label['senderOfficeCode'] = str_replace( 'officeID-', '', $new_send_from );
-					break;
+						$label['senderAddress'] = $profile_addresses[ $new_send_from ];
+						unset( $label['senderOfficeCode'] );
+						break;
+					case 'office':
+						$label['senderOfficeCode'] = str_replace( 'officeID-', '', $new_send_from );
+						break;
+				}
 			}
 		}
 
 		return $label;
+	}
+
+	public static function update_weight( $label ) {
+		$weight = 0;
+		
+		if ( !empty( $label['packs'] ) ) {
+			foreach ( $label['packs'] as $pack ) {
+				$weight += isset( $pack['weight'] ) ? floatval( $pack['weight'] ) : 0;
+			}
+	
+			$label['weight'] = $weight;
+		} else {
+			$label['weight'] = apply_filters( 'woo_bg/econt/default_weight', 0.100 );
+		}
+
+
+		return $label;
+	}
+
+	public static function set_min_pack_weight( $request_body ) {
+		if ( empty( $request_body['label'] ) || ! is_array( $request_body['label'] ) ) {
+			return $request_body;
+		}
+
+		$min_weight = (float) apply_filters( 'woo_bg/econt/min_pack_weight', 0.100 );
+		$weight     = 0;
+
+		if ( ! empty( $request_body['label']['packs'] ) && is_array( $request_body['label']['packs'] ) ) {
+			foreach ( $request_body['label']['packs'] as &$pack ) {
+				if ( ! isset( $pack['weight'] ) || ! is_numeric( $pack['weight'] ) || (float) $pack['weight'] < $min_weight ) {
+					$pack['weight'] = $min_weight;
+				}
+
+				$weight += (float) $pack['weight'];
+			}
+
+			unset( $pack );
+
+			$request_body['label']['weight'] = round( $weight, 3 );
+		} elseif ( isset( $request_body['label']['weight'] ) && ( ! is_numeric( $request_body['label']['weight'] ) || (float) $request_body['label']['weight'] < $min_weight ) ) {
+			$request_body['label']['weight'] = $min_weight;
+		}
+
+		return $request_body;
 	}
 
 	public static function generate_sender_address() {
@@ -526,7 +581,7 @@ class Econt {
 
 						$label["packingList"][] = [
 							'inventoryNum' => $key,
-							'description' => $item->get_name() . " x " . $item->get_quantity(),
+							'description' => woo_bg_normalize_text_for_label( $item->get_name() . " x " . $item->get_quantity() ),
 							'weight' => number_format( $item_weight, 3 ),
 							'count' => 1,
 							'price' => number_format( $item->get_total(), 2, '.', '' ) + number_format( $item->get_total_tax(), 2, '.', '' ),
@@ -545,7 +600,7 @@ class Econt {
 
 							$label["packingList"][] = [
 								'inventoryNum' => $key,
-								'description' => $item->get_name() . " x " . $item->get_quantity(),
+								'description' => woo_bg_normalize_text_for_label( $item->get_name() . " x " . $item->get_quantity() ),
 								'weight' => 0.05,
 								'count' => 1,
 								'price' => number_format( $item->get_total(), 2, '.', '' ) + number_format( $item->get_total_tax(), 2, '.', '' ),
@@ -741,10 +796,12 @@ class Econt {
 		$payment_by = map_deep( $_REQUEST['paymentBy'], 'sanitize_text_field' );
 
 		if ( !empty( $payment_by ) ) {
+			$tax_rate = apply_filters('woo_bg/econt/fixed_price_tax_rate', 20, $order->get_shipping_country() );
+
 			if ( $payment_by['id'] == 'buyer' ) {
-				$price = woo_bg_tax_based_price( $response['label']['receiverDueAmount'] );
+				$price = woo_bg_tax_based_price( $response['label']['receiverDueAmount'], $tax_rate );
 			} else if ( $payment_by['id'] == 'fixed' && !empty( $request_body['paymentReceiverAmount'] ) ) {
-				$price = woo_bg_tax_based_price( $request_body['paymentReceiverAmount'] );
+				$price = woo_bg_tax_based_price( $request_body['paymentReceiverAmount'], $tax_rate );
 			}
 		}
 

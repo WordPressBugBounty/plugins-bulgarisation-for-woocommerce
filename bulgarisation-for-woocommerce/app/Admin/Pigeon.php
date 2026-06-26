@@ -21,6 +21,8 @@ class Pigeon {
 		add_action( 'wp_ajax_woo_bg_pigeon_delete_label', array( __CLASS__, 'delete_label' ) );
 		add_action( 'wp_ajax_woo_bg_pigeon_update_shipment_status', array( __CLASS__, 'update_shipment_status' ) );
 		add_action( 'wp_ajax_woo_bg_pigeon_print_labels', array( __CLASS__, 'print_labels_endpoint' ) );
+
+		add_filter( 'woo_bg/pigeon/calculate_label', array( __CLASS__, 'set_min_package_weight' ), 30 );
 	}
 
 	public static function admin_enqueue_scripts() {
@@ -512,7 +514,7 @@ class Pigeon {
 
 		foreach ( $order->get_items() as $item ) {
 			$label['inventory_items'][] = array(
-				'description' => $item->get_name(),
+				'description' => woo_bg_normalize_text_for_label( $item->get_name() ),
 				'quantity' => $item['quantity'],
 			);
 		}
@@ -520,9 +522,27 @@ class Pigeon {
 		return $label;
 	}
 
+	public static function set_min_package_weight( $label ) {
+		if ( empty( $label['packages'] ) || ! is_array( $label['packages'] ) ) {
+			return $label;
+		}
+
+		$min_weight = (float) apply_filters( 'woo_bg/pigeon/min_package_weight', 0.100 );
+
+		foreach ( $label['packages'] as &$package ) {
+			if ( ! isset( $package['weight'] ) || ! is_numeric( $package['weight'] ) || (float) $package['weight'] < $min_weight ) {
+				$package['weight'] = $min_weight;
+			}
+		}
+
+		unset( $package );
+
+		return $label;
+	}
+
 	protected static function update_customer_note( $label, $order ) {
 		if ( $order->get_customer_note() ) {
-			$label['note'] = mb_substr( $order->get_customer_note(), 0, 1000 );
+			$label['note'] = woo_bg_normalize_text_for_label( $order->get_customer_note(), 1000 );
 		} else {
 			unset( $label['note'] );
 		}
@@ -549,6 +569,7 @@ class Pigeon {
 
 			$data['message'] = implode( ", ", $errors );
 		} else {
+			unset( $response['data']['label_pdf'] );
 			//$data['price'] = woo_bg_tax_based_price( $response['data']['total_price'] );
 			$data['label'] = $request_body;
 			$data['shipmentStatus'] = $response;
@@ -569,12 +590,19 @@ class Pigeon {
 			wp_die();
 		}
 		
+		$container = woo_bg()->container();
 		$order_id = sanitize_text_field( $_REQUEST['order-id'] );
 		$order = wc_get_order( $order_id );
 		$shipment_status = $order->get_meta( 'woo_bg_pigeon_shipment_status' );
+		$size = isset( $_REQUEST['size'] ) ? sanitize_key( $_REQUEST['size'] ) : '';
+		$request_args = array();
 
-		$pdf_escaped = base64_decode( $shipment_status['data']['label_pdf'] );
+		if ( 'a4' === $size ) {
+			$request_args['format'] = 'a4';
+		}
 
+		$pdf_escaped = $container[ Client::PIGEON ]->api_call( $container[ Client::PIGEON ]::CREATE_LABEL_ENDPOINT . "/" . $shipment_status['data']['reference_number'] . "/label", $request_args, 'GET', true );
+		
 		header('Content-Type: application/pdf');
 		header('Content-Length: '.strlen( $pdf_escaped ));
 		header('Content-disposition: inline; filename="' . $shipment_status['data']['reference_number'] . '.pdf"');
