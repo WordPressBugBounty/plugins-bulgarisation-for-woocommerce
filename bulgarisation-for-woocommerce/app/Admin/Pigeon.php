@@ -114,6 +114,7 @@ class Pigeon {
 						'streets' => self::get_streets( $cookie_data, $theorder ),
 						'orderId' => $theorder->get_id(),
 						'testOption' => self::get_test_option( $label_data ),
+						'labelPrintingPromo' => woo_bg_get_label_printing_promo(),
 						'i18n' => self::get_i18n(),
 						'nonce' => wp_create_nonce( 'woo_bg_admin_label' ),
 					) );
@@ -156,7 +157,7 @@ class Pigeon {
 		$cities_data = self::$container[ Client::PIGEON_CITIES ]->get_filtered_cities( $city, $state );
 
 		if ( $cities_data['city_key'] !== false ) {
-			$city_id = $cities_data['cities'][ $cities_data['city_key'] ]['id'];
+			$city_id = $cities_data['cities_search_names'][ $cities_data['city_key'] ]['id'];
 		}
 
 		return $city_id;
