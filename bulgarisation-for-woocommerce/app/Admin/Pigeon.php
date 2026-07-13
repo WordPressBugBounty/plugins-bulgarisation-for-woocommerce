@@ -199,9 +199,12 @@ class Pigeon {
 		$cities_data = self::$container[ Client::PIGEON_CITIES ]->get_filtered_cities( $city, $state );
 
 		if ( $cities_data['city_key'] !== false ) {
-			$city_id = $cities_data['cities'][ $cities_data['city_key'] ][ 'id' ];
+			$city_id = self::get_city_id( $order );
 
-			$streets = woo_bg_return_array_for_select( Address::get_streets_for_query( $city_id, '' ), 1, array( 'type' => 'streets' ) );
+			if ( !( $city_id === false || $city_id === null ) ) {
+				$streets = woo_bg_return_array_for_select( Address::get_streets_for_query( $city_id, '' ), 1, array( 'type' => 'streets' ) );
+			}
+
 		}
 
 		return $streets;
