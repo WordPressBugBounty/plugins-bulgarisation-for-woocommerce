@@ -30,7 +30,9 @@ class Cities {
 			$data = $this->get_page( $page );
 
 			if ( is_array( $data ) && $data['success'] && isset( $data['data'] ) && is_array( $data['data'] ) ) {
-				$all_cities = array_merge( $all_cities, $data['data'] );
+				foreach ( $data['data'] as $city ) {
+					$all_cities[] = $city;
+				}
 				$current_page = $data['meta']['current_page'];
 				$total_pages = $data['meta']['last_page'];
 
@@ -39,7 +41,9 @@ class Cities {
 					$data = $this->get_page( $page );
 
 					if ( is_array( $data ) && $data['success'] && isset( $data['data'] ) && is_array( $data['data'] ) ) {
-						$all_cities = array_merge( $all_cities, $data['data'] );
+						foreach ( $data['data'] as $city ) {
+							$all_cities[] = $city;
+						}
 						$current_page = $data['meta']['current_page'];
 						$total_pages = $data['meta']['last_page'];
 					} else {
@@ -52,6 +56,7 @@ class Cities {
 				$cities = wp_json_encode( [ 'cities' => $all_cities ] );
 				
 				File::put_to_file( $cities_file, $cities );
+				unset( $all_cities, $data );
 			}
 		}
 
@@ -118,6 +123,8 @@ class Cities {
 			} );
 		}
 
+		unset( $this->cities[ $country_code ], $cities );
+
 		return $formatted;
 	}
 
@@ -128,6 +135,10 @@ class Cities {
 		}
 
 		return $this->cities[ $country_code ];
+	}
+
+	public function release_cities( $country_code = 'BG' ) {
+		unset( $this->cities[ $country_code ] );
 	}
 
 	public function get_state_name( $state_code, $country_code = 'BG' ) {
@@ -148,9 +159,9 @@ class Cities {
 			];
 		}
 
-		$city = mb_strtolower( Transliteration::latin2cyrillic( trim( $query ) ) );
+		$city = $this->normalize_city_name( $query );
 		$state_name = $this->get_state_name( $state );
-		$cities = $this->find_city( $query );
+		$cities = $this->find_city( $city );
 
 		$cities_only_names = [];
 		$cities_search_names = [];
@@ -158,12 +169,12 @@ class Cities {
 		
 		if ( !empty( $cities ) ) {
 			foreach ( $cities as $temp_city ) {
-				if ( $temp_city['district'] !== $state_name ) {
+				if ( $this->normalize_text( $temp_city['district'] ) !== $this->normalize_text( $state_name ) ) {
 					continue;
 				}
 				
 				$cities_only_names_dropdowns[] = $temp_city[ 'name' ];
-				$temp_city[ 'name' ] = mb_strtolower( $temp_city[ 'name' ] );
+				$temp_city[ 'name' ] = $this->normalize_city_name( $temp_city[ 'name' ] );
 				$cities_only_names[] = $temp_city[ 'name' ];
 				$cities_search_names[] = $temp_city;
 			}
@@ -179,6 +190,21 @@ class Cities {
 			'cities_only_names_dropdowns' => $cities_only_names_dropdowns,
 			'city_key' => $city_key,
 		];
+	}
+
+	private function normalize_city_name( $city ) {
+		$city = trim( (string) $city );
+		$city = preg_replace( '/^\s*(?:гр(?:ад)?|с(?:ело)?|gr(?:ad)?|s(?:elo)?)(?:\s*[.\-,:]\s*|\s+)/iu', '', $city );
+		$city = Transliteration::latin2cyrillic( $city );
+
+		return $this->normalize_text( $city );
+	}
+
+	private function normalize_text( $text ) {
+		$text = mb_strtolower( trim( (string) $text ) );
+		$text = preg_replace( '/[\s\p{Zs}]+/u', ' ', $text );
+
+		return trim( $text, " \t\n\r\0\x0B.,-" );
 	}
 
 	public function get_regions( $country_code = 'BG' ) {

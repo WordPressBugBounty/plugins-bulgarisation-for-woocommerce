@@ -45,9 +45,13 @@ class Cities {
 
 				$csv->use_first_row_as_header();
 
-				$cities_by_region = array_filter( $csv->to_array(), function( $city ) use ( $region ) {
-					return ( $city['regionEn'] === $region );
-				} );
+				$cities_by_region = array();
+
+				foreach ( $csv as $city ) {
+					if ( $city['regionEn'] === $region ) {
+						$cities_by_region[] = $city;
+					}
+				}
 
 				$cities_by_region = wp_json_encode( $cities_by_region );
 
@@ -75,6 +79,10 @@ class Cities {
 		return $this->cities[ $region ];
 	}
 
+	public function release_cities( $region ) {
+		unset( $this->cities[ $region ] );
+	}
+
 	public function get_formatted_cities( $country_id = '100' ) {
 		$formatted = [];
 		$regions = $this->get_regions( $country_id );
@@ -90,6 +98,10 @@ class Cities {
 					);
 				}
 			}
+
+			// The formatted list is all we need here. Keeping the raw data for all
+			// 28 regions roughly doubles the peak memory used by the settings tab.
+			unset( $this->cities[ $region ], $cities );
 		}
 
 		uasort( $formatted, function( $a, $b ) {
@@ -110,11 +122,7 @@ class Cities {
 	}
 
 	public function get_filtered_cities( $city, $state, $country_id = 100 ) {
-		if ( $country_id === '100' ) {
-			$city = mb_strtolower(Transliteration::latin2cyrillic($city));
-		} else {
-			$city = mb_strtolower( $city );
-		}
+		$city = $this->normalize_city_name( $city, $country_id );
 
 		$cities = $this->get_cities_by_region( $state, $country_id );
 		$cities_only_names = [];
@@ -124,17 +132,14 @@ class Cities {
 		if ( !empty( $cities ) ) {
 			foreach ( $cities as $temp_city ) {
 				$cities_only_names_dropdowns[] = $temp_city['name'];
-				$temp_city['name'] = mb_strtolower( $temp_city['name'] );
+				$temp_city['name'] = $this->normalize_city_name( $temp_city['name'], $country_id );
 				$cities_only_names[] = $temp_city['name'];
-				$cities_only_names[] = $temp_city['type'] . " " . $temp_city['name'];
 				$cities_search_names[] = $temp_city;
 			}
 		}
 
 		foreach ( $cities_search_names as $searched_key => $key_search_city ) {
-			$name_with_type = $key_search_city['type'] . " " . $key_search_city['name'];
-
-			if ( $city === $name_with_type || $city === $key_search_city['name'] ) {
+			if ( $city === $key_search_city['name'] ) {
 				$city_key = $searched_key;
 				break;
 			}
@@ -148,6 +153,20 @@ class Cities {
 			'cities_only_names_dropdowns' => $cities_only_names_dropdowns,
 			'city_key' => $city_key ?? null,
 		];
+	}
+
+	private function normalize_city_name( $city, $country_id ) {
+		$city = trim( (string) $city );
+
+		if ( (string) $country_id === '100' ) {
+			$city = preg_replace( '/^\s*(?:гр(?:ад)?|с(?:ело)?|gr(?:ad)?|s(?:elo)?)(?:\s*[.\-,:]\s*|\s+)/iu', '', $city );
+			$city = Transliteration::latin2cyrillic( $city );
+		}
+
+		$city = mb_strtolower( $city );
+		$city = preg_replace( '/[\s\p{Zs}]+/u', ' ', $city );
+
+		return trim( $city, " \t\n\r\0\x0B.,-" );
 	}
 
 	public function get_regions( $country_id = 100 ) {

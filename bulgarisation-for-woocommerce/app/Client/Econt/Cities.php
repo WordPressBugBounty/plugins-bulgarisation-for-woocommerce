@@ -33,10 +33,12 @@ class Cities {
 						foreach ( $api_call['cities'] as &$city ) {
 							unset( $city[ 'servingOffices' ] );
 						}
+						unset( $city );
 
 						$cities = wp_json_encode( $api_call );
 						
 						File::put_to_file( $cities_file, $cities );
+						unset( $api_call );
 					}
 				}
 			}
@@ -72,6 +74,10 @@ class Cities {
 			return strcmp( $a["label"], $b["label"] );
 		} );
 
+		// The settings select uses only the compact formatted representation.
+		// Do not retain the complete Econt city records alongside it.
+		unset( $this->cities[ $country_code ], $cities );
+
 		return $formatted;
 	}
 
@@ -82,6 +88,10 @@ class Cities {
 		}
 
 		return $this->cities[ $country_code ];
+	}
+
+	public function release_cities( $country_code = 'BG' ) {
+		unset( $this->cities[ $country_code ] );
 	}
 
 	public function get_cities_by_region( $region, $country_code = 'BG' ) {
@@ -116,13 +126,7 @@ class Cities {
 	}
 
 	public function get_filtered_cities( $city, $state, $country_code = 'BG' ) {
-		$city = trim( $city );
-		
-		if ( $country_code !== 'BG' ) {
-			$city = mb_strtolower( $city );
-		} else {
-			$city = mb_strtolower( Transliteration::latin2cyrillic( $city ) );
-		}
+		$city = $this->normalize_city_name( $city, $country_code );
 
 		if ( $country_code === 'GR' ) {
 			$regions = explode( ',', $state );
@@ -147,7 +151,7 @@ class Cities {
 		if ( !empty( $cities ) ) {
 			foreach ( $cities as $temp_city ) {
 				$cities_only_names_dropdowns[] = $temp_city[ $key ];
-				$temp_city[ $key ] = mb_strtolower( $temp_city[ $key ] );
+				$temp_city[ $key ] = $this->normalize_city_name( $temp_city[ $key ], $country_code );
 				$cities_only_names[] = $temp_city[ $key ];
 				$cities_search_names[] = $temp_city;
 			}
@@ -163,6 +167,20 @@ class Cities {
 			'cities_only_names_dropdowns' => $cities_only_names_dropdowns,
 			'city_key' => $city_key,
 		];
+	}
+
+	private function normalize_city_name( $city, $country_code ) {
+		$city = trim( (string) $city );
+
+		if ( $country_code === 'BG' ) {
+			$city = preg_replace( '/^\s*(?:гр(?:ад)?|с(?:ело)?|gr(?:ad)?|s(?:elo)?)(?:\s*[.\-,:]\s*|\s+)/iu', '', $city );
+			$city = Transliteration::latin2cyrillic( $city );
+		}
+
+		$city = mb_strtolower( $city );
+		$city = preg_replace( '/[\s\p{Zs}]+/u', ' ', $city );
+
+		return trim( $city, " \t\n\r\0\x0B.,-" );
 	}
 
 	public function get_regions( $country_code = 'BG' ) {
