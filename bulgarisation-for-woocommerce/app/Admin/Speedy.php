@@ -187,6 +187,11 @@ class Speedy {
 			'other' => __( 'Other', 'bulgarisation-for-woocommerce' ),
 			'blVhEt' => __( 'bl. vh. et.', 'bulgarisation-for-woocommerce' ),
 			'streetNumber' => __( 'Street number', 'bulgarisation-for-woocommerce' ),
+			'blockNumber' => __( 'Block', 'bulgarisation-for-woocommerce' ),
+			'entranceNumber' => __( 'Entrance', 'bulgarisation-for-woocommerce' ),
+			'floorNumber' => __( 'Floor', 'bulgarisation-for-woocommerce' ),
+			'apartmentNumber' => __( 'Apartment', 'bulgarisation-for-woocommerce' ),
+			'addressDetailRequired' => __( 'Fill in at least one of street number, block, entrance, floor or apartment.', 'bulgarisation-for-woocommerce' ),
 			'streetQuarter' => __( 'Street/Quarter', 'bulgarisation-for-woocommerce' ),
 			'office' => __( 'Office', 'bulgarisation-for-woocommerce' ),
 			'automat' => __( 'Automat', 'bulgarisation-for-woocommerce' ),
@@ -338,6 +343,7 @@ class Speedy {
 		$order->update_meta_data( 'woo_bg_speedy_shipment_status', '' );
 		$order->update_meta_data( 'woo_bg_speedy_operations', '' );
 		$order->save();
+		woo_bg_add_label_order_note( $order, 'Speedy', 'deleted', $shipment_status['id'] ?? '' );
 		
 		wp_send_json_success( $response );
 		wp_die();
@@ -590,6 +596,7 @@ class Speedy {
 	public static function send_label_to_speedy( $label, $order ) {
 		$data = [];
 		$order_id = $order->get_id();
+		$action = $order->get_meta( 'woo_bg_speedy_shipment_status' ) ? 'updated' : 'created';
 		$generated_data = self::generate_response( $label, $order );
 		$response = $generated_data['response'];
 		$request_body = $generated_data['request_body'];
@@ -608,6 +615,7 @@ class Speedy {
 			$order->update_meta_data( 'woo_bg_speedy_label', $request_body );
 			$order->update_meta_data( 'woo_bg_speedy_shipment_status', $response );
 			$order->save();
+			woo_bg_add_label_order_note( $order, 'Speedy', $action, $response['id'] ?? '' );
 
 			self::update_order_shipping_price( $response, $order_id );
 		}
@@ -623,6 +631,9 @@ class Speedy {
 		$type = map_deep( $_REQUEST['type'], 'sanitize_text_field' );
 		$cookie_data = map_deep( $_REQUEST['cookie_data'], 'sanitize_text_field' );
 		$cookie_data['type'] = $type['id'];
+		foreach ( array( 'streetNumber', 'blockNumber', 'entranceNumber', 'floorNumber', 'apartmentNumber' ) as $field ) {
+			$cookie_data[ $field ] = sanitize_text_field( $_REQUEST[ $field ] ?? '' );
+		}
 
 		$label = self::update_phone_and_names( $label );
 
@@ -653,16 +664,17 @@ class Speedy {
 		$address['siteId'] = $cities_data['cities'][ $cities_data['city_key'] ][ 'id' ];
 		$street = map_deep( $_REQUEST['street'], 'sanitize_text_field' );
 		$other = sanitize_text_field( $_REQUEST[ 'other' ] );
+		$details = array(
+			'streetNo'    => sanitize_text_field( $_REQUEST['streetNumber'] ?? '' ),
+			'blockNo'     => sanitize_text_field( $_REQUEST['blockNumber'] ?? '' ),
+			'entranceNo'  => sanitize_text_field( $_REQUEST['entranceNumber'] ?? '' ),
+			'floorNo'     => sanitize_text_field( $_REQUEST['floorNumber'] ?? '' ),
+			'apartmentNo' => sanitize_text_field( $_REQUEST['apartmentNumber'] ?? '' ),
+		);
 
 		if ( !empty( $street['type'] ) && $street['type'] === 'streets' ) {
 			$address["streetId"] = str_replace('street-', '', $street['orig_key'] ); 
-			$parts = explode( ',', sanitize_text_field( $_REQUEST[ 'streetNumber' ] ) );
-			$address["streetNo"] = array_shift( $parts );
-
-			if ( !empty( $parts ) ) {
-				$address["addressLine1"] = implode( ' ', $parts );
-				$address["addressNote"] = implode( ' ', $parts );
-			}
+			$address = array_merge( $address, array_filter( $details ) );
 		} else if ( 
 			!empty( $street['type'] ) && $street['type'] === 'quarters' || 
 			!empty( $cookie_data['mysticQuarter'] )
@@ -674,11 +686,12 @@ class Speedy {
 					$address["postCode"] = $order->get_billing_postcode();
 				}
 				
-				$address["addressNote"] = $cookie_data['mysticQuarter'] . ' ' . $other;
+				$address["addressNote"] = $cookie_data['mysticQuarter'];
 			} else {
 				$address["complexId"] = str_replace('qtr-', '', $street['orig_key'] );
+				$address = array_merge( $address, array_filter( $details ) );
 
-				if ( !empty( $other ) ) {
+				if ( empty( $details['blockNo'] ) && !empty( $other ) ) {
 					$parts = explode( ' ', $other );
 
 					$address["blockNo"] = $parts[0];
